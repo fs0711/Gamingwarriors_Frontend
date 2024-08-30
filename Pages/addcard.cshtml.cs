@@ -16,6 +16,7 @@ namespace POS.Pages
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
 
+
         private readonly ILogger<addcardModel> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -36,15 +37,15 @@ namespace POS.Pages
             public string Branch { get; set; }
 
         }
-        public string SuccessMessage { get; set; }
-        public IActionResult OnGet()
+
+        public IActionResult OnGet(string message)
         {
             var accessToken = HttpContext.Session.GetString("SessionToken");
             if (string.IsNullOrEmpty(accessToken))
             {
                 return RedirectToPage("/signin");
             }
-            SuccessMessage = TempData["SuccessMessage"] as string;
+
             return Page();
         }
 
@@ -80,8 +81,9 @@ namespace POS.Pages
                 //var responseContent = await response.Content.ReadAsStringAsync();
                 //HttpContext.Session.SetString("FullResponse", responseContent);
                 //return RedirectToPage("/response");
-                TempData["SuccessMessage"] = "Data saved successfully!";
-                return RedirectToPage("/addcard");
+
+                return Page();
+
             }
             else
             {
