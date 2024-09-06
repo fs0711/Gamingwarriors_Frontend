@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text;
+using System.Net.Http;
+using System.IO.Ports;
 
 namespace POS.Pages
 {
@@ -12,18 +14,21 @@ namespace POS.Pages
     public class addbranchModel : PageModel
     {
         
-        private readonly HttpClient _httpClient;
+        
 
         public string? RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
+
+        private readonly IHttpClientFactory _httpClientFactory;
+
         private readonly ILogger<addbranchModel> _logger;
 
-        public addbranchModel(ILogger<addbranchModel> logger, HttpClient httpClient)
+        public addbranchModel(IHttpClientFactory httpClientFactory, ILogger<addbranchModel> logger)
         {
             _logger = logger;
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
         }
         [BindProperty]
         [Required]
@@ -60,19 +65,61 @@ namespace POS.Pages
         //[EmailAddress]
         //public string Email { get; set; }
 
+        [BindProperty]
+        [Required]
+        public string opening_time { get; set; }
 
 
-        public void OnGet()
+        [BindProperty]
+        [Required]
+        public string closing_time { get; set; }
+
+        [BindProperty]
+        public string SerialData { get; set; }
+
+
+
+
+        public IActionResult OnGet()
         {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            try
+            {
+                using (SerialPort serialPort = new SerialPort("COM8", 9600))
+                {
+                    serialPort.Open();
+                    SerialData = serialPort.ReadLine();
+                    serialPort.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error reading from serial port.");
+                SerialData = "Error reading from serial port.";
+            }
+
+
+
+            var accessToken = HttpContext.Session.GetString("SessionToken");
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return RedirectToPage("/signin");
+            }
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+
+            var client = _httpClientFactory.CreateClient();
+            var accessToken = HttpContext.Session.GetString("SessionToken");
+            client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+
 
             var branchData = new
             {
@@ -84,18 +131,24 @@ namespace POS.Pages
                 name,
                 users,
                 city,
-                game_types
+                game_types,
+                opening_time,
+                closing_time
+
             };
 
-            var json = JsonSerializer.Serialize(branchData);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("http://127.0.0.1:5000/api/branch/create", content);
+            var content = new StringContent(JsonSerializer.Serialize(branchData), Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("http://127.0.0.1:5000/api/branch/create", content);
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Branch added: {BranchName}", name);
-                return RedirectToPage("Index",response);
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                HttpContext.Session.SetString("FullResponse", responseContent);
+                return RedirectToPage("/response");
+                //return Page ();
             }
             else
             {

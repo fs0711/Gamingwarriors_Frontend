@@ -10,10 +10,14 @@ namespace POS.Pages
         public IndexModel(ILogger<ErrorModel> logger)
         {
             _logger = logger;
+        
         }
 
-        public IActionResult OnGet()
+        public string Port { get; set; }
+
+        public IActionResult OnGet(string port)
         {
+            Port = port;
             var accessToken = HttpContext.Session.GetString("SessionToken");
             if (string.IsNullOrEmpty(accessToken))
             {

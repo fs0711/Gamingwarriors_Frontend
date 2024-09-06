@@ -184,6 +184,20 @@
                     <a href="addbrand.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" class="me-2" alt="img">Balance</a>
                 </div>
             </div>
+@* 
+                <h1>Available COM Ports</h1>
+
+                <ul>
+                    @foreach (var port in Model.AvailablePorts)
+                    {
+                        <li>@port</li>
+                    }
+                </ul> *@
+
+
+
+
+
             <div class="card">
                 <div class="card-body">
                     <div class="table-top">
@@ -398,6 +412,11 @@
 
                     // Initialize Feather icons
                     feather.replace();
+                </script>
+
+                <script>
+                    // Log the serial data to the browser's console
+                    console.log("Serial Data: @Model.ReceivedData");
                 </script>
 
 

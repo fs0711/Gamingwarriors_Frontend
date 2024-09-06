@@ -1,8 +1,9 @@
 ﻿@page
-@model addemployeeModel
+@model POS.Pages.addorganizationModel
 @{
-    ViewData["Title"] = "Error";
 }
+
+
 
 <head>
     <meta charset="utf-8">
@@ -178,8 +179,8 @@
             <div class="content">
                 <div class="page-header">
                     <div class="page-title">
-                        <h4>Employee Management</h4>
-                        <h6>Add/Update Employee</h6>
+                        <h4>Organization Management</h4>
+                        <h6>Add/Update Organization</h6>
                     </div>
                 </div>
 
@@ -189,82 +190,50 @@
                             <div class="row">
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="Employee.Name"></label>
-                                        <input asp-for="Employee.Name" class="form-control" />
-                                        <span asp-validation-for="Employee.Name" class="text-danger"></span>
+                                        <label asp-for="ORG.Name"></label>
+                                        <input asp-for="ORG.Name" class="form-control" />
+                                        <span asp-validation-for="ORG.Name" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Employee.Role"></label>
-                                        <select asp-for="Employee.Role" class="form-control" asp-items="Model.RoleList"></select>
-                                        <span asp-validation-for="Employee.Role" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Employee.Gender"></label>
-                                        <input asp-for="Employee.Gender" class="form-control" />
-                                        <span asp-validation-for="Employee.Gender" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Employee.Organization"></label>
-                                        <input asp-for="Employee.Organization" class="form-control" />
-                                        <span asp-validation-for="Employee.Organization" class="text-danger"></span>
+                                        <label asp-for="ORG.Address"></label>
+                                        <input asp-for="ORG.Address" class="form-control" />
+                                        <span asp-validation-for="ORG.Address" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="Employee.Email"></label>
-                                        <input asp-for="Employee.Email" class="form-control" />
-                                        <span asp-validation-for="Employee.Email" class="text-danger"></span>
+                                        <label asp-for="ORG.Country"></label>
+                                        <input asp-for="ORG.Country" class="form-control" />
+                                        <span asp-validation-for="ORG.Country" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Employee.Card_id"></label>
-                                        <input asp-for="Employee.Card_id" class="form-control" />
-                                        <span asp-validation-for="Employee.Card_id" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Employee.Branch"></label>
-                                        <input asp-for="Employee.Branch" class="form-control" />
-                                        <span asp-validation-for="Employee.Branch" class="text-danger"></span>
+                                        <label asp-for="ORG.CP_Name"></label>
+                                        <input asp-for="ORG.CP_Name" class="form-control" />
+                                        <span asp-validation-for="ORG.CP_Name" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="Employee.Password"></label>
-                                        <input asp-for="Employee.Password" class="form-control" />
-                                        <span asp-validation-for="Employee.Password" class="text-danger"></span>
+                                        <label asp-for="ORG.CP_Phone_Number"></label>
+                                        <input asp-for="ORG.CP_Phone_Number" class="form-control" />
+                                        <span asp-validation-for="ORG.CP_Phone_Number" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Employee.Mobile"></label>
-                                        <input asp-for="Employee.Mobile" class="form-control" />
-                                        <span asp-validation-for="Employee.Mobile" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Employee.Manager"></label>
-                                        <input asp-for="Employee.Manager" class="form-control" />
-                                        <span asp-validation-for="Employee.Manager" class="text-danger"></span>
+                                        <label asp-for="ORG.NTN"></label>
+                                        <input asp-for="ORG.NTN" class="form-control" />
+                                        <span asp-validation-for="ORG.NTN" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="Employee.NIC"></label>
-                                        <input asp-for="Employee.NIC" class="form-control" />
-                                        <span asp-validation-for="Employee.NIC" class="text-danger"></span>
+                                        <label asp-for="ORG.City"></label>
+                                        <input asp-for="ORG.City" class="form-control" />
+                                        <span asp-validation-for="ORG.City" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Employee.City"></label>
-                                        <input asp-for="Employee.City" class="form-control" />
-                                        <span asp-validation-for="Employee.City" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label> Employee Image</label>
-                                        <div class="image-upload">
-                                            <input type="file">
-                                            <div class="image-uploads">
-                                                <img src="assets/img/icons/upload.svg" alt="img">
-                                                <h4>Drag and drop a file to upload</h4>
-                                            </div>
-                                        </div>
+                                        <label asp-for="ORG.CP_Email_Address"></label>
+                                        <input asp-for="ORG.CP_Email_Address" class="form-control" />
+                                        <span asp-validation-for="ORG.CP_Email_Address" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">

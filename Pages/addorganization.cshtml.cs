@@ -1,64 +1,66 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.Json;
 using System.Text;
-using static POS.Pages.SigninModel;
+using static POS.Pages.addemployeeModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace POS.Pages
 {
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [IgnoreAntiforgeryToken]
-    public class addmemberModel : PageModel
+    public class addorganizationModel : PageModel
     {
+        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        //[IgnoreAntiforgeryToken]
+
         public string? RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<addmemberModel> _logger;
+        private readonly ILogger<addorganizationModel> _logger;
 
-        public addmemberModel(IHttpClientFactory httpClientFactory, ILogger<addmemberModel> logger)
-        {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-        }
         [BindProperty]
-        public MemberInputModel Member { get; set; }
+        public OrganizationInputModel ORG { get; set; }
 
-        public class MemberInputModel
+
+
+        public class OrganizationInputModel
         {
             [Required]
             public string Name { get; set; }
 
             [Required]
-            [EmailAddress]
-            public string Email { get; set; }
-
-            [Required]
-            public string Level { get; set; }
-
-            [Required]
-            [Phone]
-            public string Mobile { get; set; }
-
-            [Required]
-            public string NIC { get; set; }
-
-            [Required]
-            public string CardId { get; set; }
+            public string Address { get; set; }
 
             [Required]
             public string City { get; set; }
 
             [Required]
-            public int Rechargeamount { get; set; }
+            public string Country { get; set; }
 
+            [Required]
+            public string CP_Name { get; set; }
+
+            [Required]
+            public string CP_Email_Address { get; set; }
+
+            [Required]
+            public string CP_Phone_Number { get; set; }
+
+           
+            public string NTN { get; set; }
         }
-
+            public addorganizationModel(IHttpClientFactory httpClientFactory, ILogger<addorganizationModel> logger)
+        {
+            _httpClientFactory = httpClientFactory;
+            _logger = logger;
+        }
         public IActionResult OnGet()
         {
+
+
             var accessToken = HttpContext.Session.GetString("SessionToken");
             if (string.IsNullOrEmpty(accessToken))
             {
@@ -67,6 +69,8 @@ namespace POS.Pages
 
             return Page();
         }
+
+
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -81,21 +85,21 @@ namespace POS.Pages
 
             client.DefaultRequestHeaders.Add("x-session-key", accessToken);
 
-            var memberData = new
+            var orgData = new
             {
-                name = Member.Name,
-                email_address = Member.Email,
-                membership_level = Member.Level,
-                phone_number = Member.Mobile,
-                nic = Member.NIC,
-                card_id = Member.CardId,
-                city = Member.City,
-                credit = Member.Rechargeamount
+                name = ORG.Name,
+                address = ORG.Address,
+                city = ORG.City,
+                country = ORG.Country,
+                cp_name = ORG.CP_Name,
+                cp_email_address = ORG.CP_Email_Address,
+                cp_phone_number = ORG.CP_Phone_Number,
+                ntn = ORG.NTN
             };
 
-            var content = new StringContent(JsonSerializer.Serialize(memberData), Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(orgData), Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("http://127.0.0.1:5000/api/members/create", content);
+            var response = await client.PostAsync("http://127.0.0.1:5000/api/organization/create", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -111,6 +115,8 @@ namespace POS.Pages
                 return Page();
             }
         }
-    }
 
+
+
+    }
 }

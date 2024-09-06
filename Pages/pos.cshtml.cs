@@ -5,6 +5,15 @@ using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
+using System.IO.Ports;
+
+
+using POS.Services;
+using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+
 
 namespace POS.Pages
 {
@@ -18,15 +27,25 @@ namespace POS.Pages
 
         private readonly ILogger<posModel> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-        public posModel(ILogger<posModel> logger, IHttpClientFactory httpClientFactory)
+        private readonly SerialPortService _serialPortService;
+
+        public posModel(ILogger<posModel> logger, IHttpClientFactory httpClientFactory, SerialPortService serialPortService)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
+            _serialPortService = serialPortService;
         }
+
+
+
         [BindProperty]
         public RechargeInputModel Recharge { get; set; }
 
+        public string[] AvailablePorts { get; set; }
+
         public string ErrorMessage { get; set; }
+
+        public string ReceivedData { get; private set; }
 
         public class RechargeInputModel
         {
@@ -40,11 +59,17 @@ namespace POS.Pages
 
         public IActionResult OnGet()
         {
+
+            AvailablePorts = SerialPort.GetPortNames();
+
             var accessToken = HttpContext.Session.GetString("SessionToken");
+            
             if (string.IsNullOrEmpty(accessToken))
             {
                 return RedirectToPage("/signin");
             }
+
+            ReceivedData = _serialPortService.GetLatestData();
 
             // Handle GET request if needed
             return Page();
