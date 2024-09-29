@@ -2,18 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
-using System.IO.Ports;
-
-
-using POS.Services;
-using Microsoft.Extensions.Logging;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-
+using static POS.Pages.SigninModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace POS.Pages
 {
@@ -25,85 +17,105 @@ namespace POS.Pages
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-        private readonly ILogger<posModel> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly SerialPortService _serialPortService;
+        private readonly ILogger<posModel> _logger;
 
-        public posModel(ILogger<posModel> logger, IHttpClientFactory httpClientFactory, SerialPortService serialPortService)
+        public posModel(IHttpClientFactory httpClientFactory, ILogger<posModel> logger)
         {
-            _logger = logger;
             _httpClientFactory = httpClientFactory;
-            _serialPortService = serialPortService;
+            _logger = logger;
         }
-
-
 
         [BindProperty]
-        public RechargeInputModel Recharge { get; set; }
+        public PosInputModel POS { get; set; }
+        public SelectList rfcardList { get; set; }
 
-        public string[] AvailablePorts { get; set; }
 
-        public string ErrorMessage { get; set; }
-
-        public string ReceivedData { get; private set; }
-
-        public class RechargeInputModel
+        public class PosInputModel
         {
-            [Required]
-            public string CardTid { get; set; }
 
             [Required]
-            [Range(0.01, double.MaxValue, ErrorMessage = "Please enter a valid amount")]
-            public decimal RechargeAmount { get; set; }
+            public int Amount { get; set; }
+
+            [Required]
+            public string Purpose { get; set; }
+
+
+            [Required]
+            public string Card_id { get; set; }
+
+
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-
-            AvailablePorts = SerialPort.GetPortNames();
-
             var accessToken = HttpContext.Session.GetString("SessionToken");
-            
             if (string.IsNullOrEmpty(accessToken))
             {
                 return RedirectToPage("/signin");
             }
 
-            ReceivedData = _serialPortService.GetLatestData();
+            var client = _httpClientFactory.CreateClient();
 
-            // Handle GET request if needed
+
+            client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+
+            var responserfcard = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcards");
+
+            if (responserfcard.IsSuccessStatusCode)
+            {
+                var json = await responserfcard.Content.ReadAsStringAsync();
+
+
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+                    var rfcards = responseDatarfcard.Select(rfcards => new
+                    {
+                        Id = rfcards.GetProperty("card_id").GetString(),
+                        card_id = rfcards.GetProperty("id").GetString()
+                    }).ToList();
+
+                    rfcardList = new SelectList(rfcards, "card_id", "Id");
+                }
+            }
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
 
-            var rechargeData = new
-            {
-                card_tid = Recharge.CardTid,
-                recharge_amount = Recharge.RechargeAmount
-            };
-            var accessToken = HttpContext.Session.GetString("SessionToken");
             var client = _httpClientFactory.CreateClient();
+
+            var accessToken = HttpContext.Session.GetString("SessionToken");
+
             client.DefaultRequestHeaders.Add("x-session-key", accessToken);
 
-            var content = new StringContent(JsonSerializer.Serialize(rechargeData), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("", content);
+            var posData = new
+            {
+                amount = POS.Amount,
+                purpose = POS.Purpose,
+                card_id = POS.Card_id,
+
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(posData), Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("http://127.0.0.1:5000/api/accounts/credit", content);
 
             if (response.IsSuccessStatusCode)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                HttpContext.Session.SetString("FullResponse", responseContent);
-
-                return RedirectToPage("/");
+                //var responseContent = await response.Content.ReadAsStringAsync();
+                //HttpContext.Session.SetString("FullResponse", responseContent);
+                //return RedirectToPage("/response");
+                return Page();
             }
             else
             {
-                ErrorMessage = "An error occurred while processing the recharge.";
+                _logger.LogError("Error posting member data: {StatusCode}", response.StatusCode);
+                ModelState.AddModelError(string.Empty, "There was an error saving the member.");
                 return Page();
             }
         }

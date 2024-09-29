@@ -1,7 +1,6 @@
 ﻿@page
-@model branchlistModel
+@model userlistModel
 @{
-    ViewData["Title"] = "Error";
 }
 
 <head>
@@ -203,16 +202,15 @@
                 </div>
             </div>
         </div>
-
         <div class="page-wrapper">
             <div class="content">
                 <div class="page-header">
                     <div class="page-title">
-                        <h4>Branch List</h4>
-                        <h6>Manage your Branch</h6>
+                        <h4>User List</h4>
+                        <h6>Manage your User</h6>
                     </div>
                     <div class="page-btn">
-                        <a href="addstore.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-2">Add Branch</a>
+                        <a href="addstore.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-2">Add User</a>
                     </div>
                 </div>
 
@@ -284,25 +282,25 @@
                             <table class="table table-bordered datanew">
                                 <thead>
                                     <tr>
-                                        <th>Branch ID</th>
+                                        <th>Email Address</th>
                                         <th>Name</th>
-                                        <th>City</th>
-                                        <th>Opening Time</th>
-                                        <th>Closing Time</th>
-                                        <th>Organziation</th>
+                                        <th>Phone Number</th>
+                                        <th>Role</th>
+                                        <th>Organization</th>
+                                        <th>Branch</th>
 
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.BranchResponse.ResponseData)
+                                    @foreach (var item in Model.UserResponse.UserResponseData)
                                     {
                                         <tr>
-                                            <td>@item.BranchId</td>
+                                            <td>@item.EmailAddress</td>
                                             <td>@item.Name</td>
-                                            <td>@item.City</td>
-                                            <td>@item.OpeningTime</td>
-                                            <td>@item.ClosingTime</td>
+                                            <td>@item.PhoneNumber</td>
+                                            <td>@item.RoleName</td>
                                             <td>@item.Organization</td>
+                                            <td>@item.Branch</td>
 
                                         </tr>
                                     }

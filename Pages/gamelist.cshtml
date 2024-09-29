@@ -1,8 +1,9 @@
 ﻿@page
 @model gamelistModel
 @{
-    ViewData["Title"] = "gamelist";
 }
+
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -19,6 +20,8 @@
     <link rel="stylesheet" href="assets/css/animate.css">
 
     <link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
+
+    <link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css">
 
     <link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css">
 
@@ -123,29 +126,43 @@
                             <a asp-page="/index"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Games</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/game.svg" alt="img"><span> Game</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/gamelist">Game List</a></li>
                                 <li><a asp-page="/addgame">Add Game</a></li>
+                                <li><a asp-page="/gamelist">Game List</a></li>
+                                <li><a asp-page="/editgame">Edit Game</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/organization.svg" alt="img"><span> Organization</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addorganization">Add Organization</a></li>
+                                <li><a asp-page="/organizationlist">List Organization</a></li>
+                                <li><a asp-page="/editorganization">Edit Organization</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/branch.svg" alt="img"><span> Branch</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/branchlist">List Branch</a></li>
+                                <li><a asp-page="/editbranch">Edit Branch</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                @* <li><a asp-page="/salesreport">Sales List</a></li> *@
+                                @* <li><a asp-page="/SerialData">Manage</a></li> *@
                                 <li><a asp-page="/pos">POS</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Member</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/customerlist">List Members</a></li>
-                                <li><a asp-page="/addmember">Add Member </a></li>
-                                <li><a asp-page="/addmemberprofile">Add Member Profile </a></li>
-                                @* <li><a asp-page="/addcard">Add Card</a></li>
-                                <li><a asp-page="/cardlist">Card List</a></li> *@
-                                <li><a asp-page="/branchlist">List Branches</a></li>
-                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/addmember">Add Member</a></li>
+                                <li><a asp-page="/memberlist">List Members</a></li>
+                                <li><a asp-page="/editmember">Edit Member</a></li>
+                                <li><a asp-page="/memberprofile">Member Profile</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
@@ -155,16 +172,31 @@
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Employess</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/addemployee">New Employee </a></li>
-                                <li><a asp-page="/employeelist">Employees List</a></li>
+                                <li><a asp-page="/addemployee">Add User </a></li>
+                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
+                                <li><a asp-page="/edituser">Edit User</a></li>
+                                <li><a asp-page="/userlist">List Users</a></li>
+                                <li><a asp-page="/userhistory">User History</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/debitcard.svg" alt="img"><span>Rfcard</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addrfcard">Add Rfcard </a></li>
+                                <li><a asp-page="/rfcardlist">Rfcard List </a></li>
+                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
+                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/settings.svg" alt="img"><span> Settings</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/grouppermission">Group Permissions</a></li>
+                                <li><a asp-page="/config">Configuration</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -181,124 +213,48 @@
                         <h6>Manage your Games</h6>
                     </div>
                     <div class="page-btn">
-                        <a href="addproduct.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-1">Add New Game</a>
+                        <a href="addstore.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-2">Add Game</a>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
                         <div class="table-top">
-                            <div class="search-set">
-                                <div class="search-path">
-                                    <a class="btn btn-filter" id="filter_search">
-                                        <img src="assets/img/icons/filter.svg" alt="img">
-                                        <span><img src="assets/img/icons/closes.svg" alt="img"></span>
-                                    </a>
-                                </div>
-                                <div class="search-input">
-                                    <a class="btn btn-searchset"><img src="assets/img/icons/search-white.svg" alt="img"></a>
-                                </div>
-                            </div>
-                            <div class="wordset">
-                                <ul>
-                                    <li>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="assets/img/icons/pdf.svg" alt="img"></a>
-                                    </li>
-                                    <li>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="assets/img/icons/excel.svg" alt="img"></a>
-                                    </li>
-                                    <li>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="assets/img/icons/printer.svg" alt="img"></a>
-                                    </li>
-                                </ul>
-                            </div>
+                            @* <div class="form-group">
+                                <label asp-for="ORG.Organization"></label>
+                                <select asp-for="ORG.Organization" class="form-control" asp-items="Model.OrganizationList" id="EMP_Organization">
+                                    <option value="">Select an Organization</option>
+                                </select>
+                            </div> *@
                         </div>
-
-                        <div class="card mb-0" id="filter_inputs">
-                            <div class="card-body pb-0">
-                                <div class="row">
-                                    <div class="col-lg-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Choose Game</option>
-                                                        <option>Snooker</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Choose Category</option>
-                                                        <option>Arcade</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Price</option>
-                                                        <option>50</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-1 col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <a class="btn btn-filters ms-auto"><img src="assets/img/icons/search-whites.svg" alt="img"></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="table-responsive">
-                            <table class="table  datanew">
+                            <table class="table table-bordered datanew">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <label class="checkboxs">
-                                                <input type="checkbox" id="select-all">
-                                                <span class="checkmarks"></span>
-                                            </label>
-                                        </th>
-                                        <th>Game Name</th>
-                                        <th>Category </th>
-                                        <th>price</th>
+                                        <th>Game_ID</th>
+                                        <th>Name</th>
+                                        <th>Cost</th>
+                                        <th>Type</th>
                                         <th>Status</th>
+                                        <th>Organization</th>
+                                        <th>Branch</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <label class="checkboxs">
-                                                <input type="checkbox">
-                                                <span class="checkmarks"></span>
-                                            </label>
-                                        </td>
-                                        <td class="productimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="assets/img/product/product1.jpg" alt="product">
-                                            </a>
-                                            <a href="javascript:void(0);">Snooker</a>
-                                        </td>
-                                        <td>Arcade</td>
-                                        <td>1500.00</td>
-                                        <td>On</td>
-                                        <td>
-                                            <a class="me-3" href="product-details.html">
-                                                <img src="assets/img/icons/eye.svg" alt="img">
-                                            </a>
-                                            <a class="me-3" href="editproduct.html">
-                                                <img src="assets/img/icons/edit.svg" alt="img">
-                                            </a>
-                                            <a class="confirm-text" href="javascript:void(0);">
-                                                <img src="assets/img/icons/delete.svg" alt="img">
-                                            </a>
-                                        </td>
-                                    </tr>
+                                    @foreach (var item in Model.GameResponse.ResponseData)
+                                    {
+                                        <tr>
+                                            <td>@item.Game_Id</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.Cost</td>
+                                            <td>@item.Type</td>
+                                            <td>@item.Unit_Status</td>
+                                            <td>@item.Organization</td>
+                                            <td>@item.Branch</td>
+
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -310,6 +266,183 @@
     </div>
 
 
+    <div class="modal fade" id="showpayment" tabindex="-1" aria-labelledby="showpayment" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Show Payments</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Reference</th>
+                                    <th>Amount	</th>
+                                    <th>Paid By	</th>
+                                    <th>Paid By	</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bor-b1">
+                                    <td>2022-03-07	</td>
+                                    <td>INV/SL0101</td>
+                                    <td>$ 1500.00	</td>
+                                    <td>Cash</td>
+                                    <td>
+                                        <a class="me-2" href="javascript:void(0);">
+                                            <img src="assets/img/icons/printer.svg" alt="img">
+                                        </a>
+                                        <a class="me-2" href="javascript:void(0);" data-bs-target="#editpayment" data-bs-toggle="modal" data-bs-dismiss="modal">
+                                            <img src="assets/img/icons/edit.svg" alt="img">
+                                        </a>
+                                        <a class="me-2 confirm-text" href="javascript:void(0);">
+                                            <img src="assets/img/icons/delete.svg" alt="img">
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="createpayment" tabindex="-1" aria-labelledby="createpayment" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Payment</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Customer</label>
+                                <div class="input-group">
+                                    <input type="text" value="2022-03-07" class="datetimepicker">
+                                    <a class="scanner-set input-group-text">
+                                        <img src="assets/img/icons/datepicker.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Reference</label>
+                                <input type="text" value="INV/SL0101">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Received Amount</label>
+                                <input type="text" value="1500.00">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Paying Amount</label>
+                                <input type="text" value="1500.00">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Payment type</label>
+                                <select class="select">
+                                    <option>Cash</option>
+                                    <option>Online</option>
+                                    <option>Inprogress</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Note</label>
+<textarea class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-submit">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="editpayment" tabindex="-1" aria-labelledby="editpayment" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Payment</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Customer</label>
+                                <div class="input-group">
+                                    <input type="text" value="2022-03-07" class="datetimepicker">
+                                    <a class="scanner-set input-group-text">
+                                        <img src="assets/img/icons/datepicker.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Reference</label>
+                                <input type="text" value="INV/SL0101">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Received Amount</label>
+                                <input type="text" value="1500.00">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Paying Amount</label>
+                                <input type="text" value="1500.00">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label>Payment type</label>
+                                <select class="select">
+                                    <option>Cash</option>
+                                    <option>Online</option>
+                                    <option>Inprogress</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Note</label>
+<textarea class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-submit">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script src="assets/js/jquery-3.6.0.min.js"></script>
 
     <script src="assets/js/feather.min.js"></script>
@@ -322,6 +455,9 @@
     <script src="assets/js/bootstrap.bundle.min.js"></script>
 
     <script src="assets/plugins/select2/js/select2.min.js"></script>
+
+    <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
 
     <script src="assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
     <script src="assets/plugins/sweetalert/sweetalerts.min.js"></script>

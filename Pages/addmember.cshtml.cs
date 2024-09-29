@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text;
 using static POS.Pages.SigninModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace POS.Pages
 {
@@ -27,6 +28,9 @@ namespace POS.Pages
         [BindProperty]
         public MemberInputModel Member { get; set; }
 
+        public string SelectedrfcardId { get; set; } // Property to hold the selected person's ID
+        public SelectList rfcardList { get; set; }
+
         public class MemberInputModel
         {
             [Required]
@@ -37,7 +41,7 @@ namespace POS.Pages
             public string Email { get; set; }
 
             [Required]
-            public string Level { get; set; }
+            public string Membership_Level { get; set; }
 
             [Required]
             [Phone]
@@ -47,17 +51,24 @@ namespace POS.Pages
             public string NIC { get; set; }
 
             [Required]
-            public string CardId { get; set; }
+            public string Card_id { get; set; }
 
             [Required]
             public string City { get; set; }
 
             [Required]
-            public int Rechargeamount { get; set; }
+            public string Credit { get; set; }
+
+            [Required]
+            public string Reward { get; set; }
+
+            [Required]
+            public string Type { get; set; }
+
 
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             var accessToken = HttpContext.Session.GetString("SessionToken");
             if (string.IsNullOrEmpty(accessToken))
@@ -65,15 +76,41 @@ namespace POS.Pages
                 return RedirectToPage("/signin");
             }
 
+            var cardData = new
+            {
+                assigned = "False"
+
+            };
+
+            var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+            var responserfcard = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcards");
+
+            if (responserfcard.IsSuccessStatusCode)
+            {
+                var json = await responserfcard.Content.ReadAsStringAsync();
+
+
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+                    var rfcards = responseDatarfcard.Select(rfcards => new
+                    {
+                        Id = rfcards.GetProperty("card_id").GetString(),
+                        card_id = rfcards.GetProperty("id").GetString()
+                    }).ToList();
+
+                    rfcardList = new SelectList(rfcards, "card_id", "Id");
+                }
+            }
+
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
 
             var client = _httpClientFactory.CreateClient();
 
@@ -85,12 +122,14 @@ namespace POS.Pages
             {
                 name = Member.Name,
                 email_address = Member.Email,
-                membership_level = Member.Level,
+                membership_level = Member.Membership_Level,
                 phone_number = Member.Mobile,
                 nic = Member.NIC,
-                card_id = Member.CardId,
+                card_id = Member.Card_id,
                 city = Member.City,
-                credit = Member.Rechargeamount
+                credit = Member.Credit,
+                reward = Member.Reward,
+                type = Member.Type
             };
 
             var content = new StringContent(JsonSerializer.Serialize(memberData), Encoding.UTF8, "application/json");
@@ -99,10 +138,10 @@ namespace POS.Pages
 
             if (response.IsSuccessStatusCode)
             {
-                //var responseContent = await response.Content.ReadAsStringAsync();
-                //HttpContext.Session.SetString("FullResponse", responseContent);
-                //return RedirectToPage("/response");
-                return Page();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                HttpContext.Session.SetString("FullResponse", responseContent);
+                return RedirectToPage("/response");
+                //return Page();
             }
             else
             {

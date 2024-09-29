@@ -1,16 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
-using static POS.Pages.cardlistModel;
 using System.Text.Json;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Data;
+
+
 
 namespace POS.Pages
 {
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [IgnoreAntiforgeryToken]
+
+
+    public class EmployeeViewModel
+    {
+        public int Role { get; set; }
+
+    }
     public class addemployeeModel : PageModel
     {
         public string? RequestId { get; set; }
@@ -27,7 +36,27 @@ namespace POS.Pages
         }
         [BindProperty]
         public EmployeeInputModel Employee { get; set; }
-        public List<SelectListItem> RoleList { get; set; }
+        public EmployeeViewModel Emp { get; set; } = new EmployeeViewModel();
+
+        public string SelectedRoleId { get; set; }
+        public SelectList RoleList { get; set; }
+
+        public string SelectedOrganizationId { get; set; } // Property to hold the selected person's ID
+
+        public SelectList OrganizationList { get; set; }
+
+        public string SelectedBranchId { get; set; } // Property to hold the selected person's ID
+
+        public SelectList BranchList { get; set; }
+
+        public string SelectedrfcardId { get; set; } // Property to hold the selected person's ID
+
+        public SelectList rfcardList { get; set; }
+
+        public string SelectedManagerId { get; set; } // Property to hold the selected person's ID
+
+        public SelectList ManagerList { get; set; }
+
 
         public class EmployeeInputModel
         {
@@ -75,34 +104,158 @@ namespace POS.Pages
 
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            RoleList = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "1", Text = "Admin" },
-            new SelectListItem { Value = "2", Text = "Owner" },
-            new SelectListItem { Value = "3", Text = "Client" },
-            new SelectListItem { Value = "4", Text = "Manager" },
-            new SelectListItem { Value = "5", Text = "Floor Incharge" },
-            new SelectListItem { Value = "6", Text = "Member" },
-        };
-
             var accessToken = HttpContext.Session.GetString("SessionToken");
             if (string.IsNullOrEmpty(accessToken))
             {
                 return RedirectToPage("/signin");
             }
 
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync("http://127.0.0.1:5000/api/static-data");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    var rolesArray = doc.RootElement.GetProperty("user_roles_and_rights").EnumerateArray();
+
+                    var roles = rolesArray.Select(role => new
+                    {
+                        Id = role.GetProperty("user_role_id").GetInt32(),
+                        Name = role.GetProperty("name").GetString()
+                    }).ToList();
+
+                    RoleList = new SelectList(roles, "Id", "Name");
+                }
+            }
+
+
+            accessToken = HttpContext.Session.GetString("SessionToken");
+
+            client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+
+            var responseorg = await client.GetAsync("http://127.0.0.1:5000/api/organization/list_organization");
+
+            if (responseorg.IsSuccessStatusCode)
+            {
+                var json = await responseorg.Content.ReadAsStringAsync();
+
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    var responseDataOrg = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+                    var orgs = responseDataOrg.Select(orgs => new
+                    {
+                        Id = orgs.GetProperty("id").GetString(),
+                        Name = orgs.GetProperty("name").GetString()
+                    }).ToList();
+
+                    OrganizationList = new SelectList(orgs, "Id", "Name");
+                }
+            }
+
+            BranchList = new SelectList(new List<SelectListItem>());
+
+
+            var responsemanager = await client.GetAsync("http://127.0.0.1:5000/api/users/read");
+
+            if (responsemanager.IsSuccessStatusCode)
+            {
+                var json = await responsemanager.Content.ReadAsStringAsync();
+
+
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    var responseDataManager = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+                    var managers = responseDataManager.Select(managers => new
+                    {
+                        Id = managers.GetProperty("id").GetString(),
+                        Name = managers.GetProperty("name").GetString()
+                    }).ToList();
+
+                    ManagerList = new SelectList(managers, "Id", "Name");
+                }
+            }
+
+            var cardData = new
+            {
+                assigned = "False"
+
+            };
+
+            var responserfcard = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcards");
+
+            if (responserfcard.IsSuccessStatusCode)
+            {
+                var json = await responserfcard.Content.ReadAsStringAsync();
+
+
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+                    var rfcards = responseDatarfcard.Select(rfcards => new
+                    {
+                        Id = rfcards.GetProperty("card_id").GetString(),
+                        card_id = rfcards.GetProperty("id").GetString()
+                    }).ToList();
+
+                    rfcardList = new SelectList(rfcards, "card_id", "Id");
+                }
+            }
+
+
+
             return Page();
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> OnGetBranchesAsync(string organizationId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var accessToken = HttpContext.Session.GetString("SessionToken");
+
+            client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+
+            // Fetch the branches from the API
+            var response = await client.GetAsync("http://127.0.0.1:5000/api/branch/list_branchs_ids");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    var responseDataBranch = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+                    // Filter branches based on the selected organizationId
+                    var filteredBranches = responseDataBranch
+                        .Where(branch => branch.GetProperty("organization").GetString() == organizationId)
+                        .Select(branch => new
+                        {
+                            Id = branch.GetProperty("id").GetString(),
+                            Name = branch.GetProperty("name").GetString()
+                        })
+                        .ToList();
+
+                    // Return filtered branches
+                    return new JsonResult(filteredBranches.Select(b => new SelectListItem { Value = b.Id, Text = b.Name }));
+                }
+            }
+
+            return new JsonResult(new List<SelectListItem>());
+        }
+
+
+
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+
 
             var client = _httpClientFactory.CreateClient();
 
@@ -121,7 +274,7 @@ namespace POS.Pages
                 gender = Employee.Gender,
                 card_id = Employee.Card_id,
                 city = Employee.City,
-                manager = Employee.Manager, 
+                manager = Employee.Manager,
                 organization = Employee.Organization,
                 branch = Employee.Branch
             };
@@ -132,16 +285,17 @@ namespace POS.Pages
 
             if (response.IsSuccessStatusCode)
             {
-                //var responseContent = await response.Content.ReadAsStringAsync();
-                //HttpContext.Session.SetString("FullResponse", responseContent);
-                //return RedirectToPage("/response");
-                return Page();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                HttpContext.Session.SetString("FullResponse", responseContent);
+                return RedirectToPage("/response");
+                //return Page();
             }
             else
             {
                 _logger.LogError("Error posting member data: {StatusCode}", response.StatusCode);
                 ModelState.AddModelError(string.Empty, "There was an error saving the member.");
-                return Page();
+                //return Page();
+                return RedirectToPage("/response");
             }
         }
 

@@ -21,6 +21,12 @@ namespace POS.Pages
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<addorganizationModel> _logger;
 
+        public addorganizationModel(IHttpClientFactory httpClientFactory, ILogger<addorganizationModel> logger)
+        {
+            _httpClientFactory = httpClientFactory;
+            _logger = logger;
+        }
+
         [BindProperty]
         public OrganizationInputModel ORG { get; set; }
 
@@ -47,16 +53,12 @@ namespace POS.Pages
             public string CP_Email_Address { get; set; }
 
             [Required]
-            public string CP_Phone_Number { get; set; }
+            public List<string> CP_Phone_Number { get; set; }
 
-           
+
             public string NTN { get; set; }
         }
-            public addorganizationModel(IHttpClientFactory httpClientFactory, ILogger<addorganizationModel> logger)
-        {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-        }
+
         public IActionResult OnGet()
         {
 

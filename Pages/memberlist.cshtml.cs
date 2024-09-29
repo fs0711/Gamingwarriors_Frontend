@@ -1,51 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text.Json;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
-using System.Text.Json;
-
 namespace POS.Pages
 {
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [IgnoreAntiforgeryToken]
 
-    public class BranchResponseModel
+    public class MemberResponseModel
     {
         [JsonPropertyName("response_code")]
         public int ResponseCode { get; set; }
 
         [JsonPropertyName("response_data")]
-        public List<BranchResponseData> ResponseData { get; set; }
+        public List<ResponseDataMember> ResponseDataMember { get; set; }
 
         [JsonPropertyName("response_message")]
         public string ResponseMessage { get; set; }
     }
 
-    public class BranchResponseData
+    public class ResponseDataMember
     {
-        [JsonPropertyName("branch_id")]
-        public string BranchId { get; set; }
+        [JsonPropertyName("email_address")]
+        public string EmailAddress { get; set; }
 
-        [JsonPropertyName("city")]
-        public string City { get; set; }
+        [JsonPropertyName("member_id")]
+        public string MemberId { get; set; }
 
-        [JsonPropertyName("closing_time")]
-        public int ClosingTime { get; set; }
+        [JsonPropertyName("membership_level")]
+        public int MembershipLevel { get; set; }
 
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("opening_time")]
-        public int OpeningTime { get; set; }
+        [JsonPropertyName("phone_number")]
+        public string PhoneNumber { get; set; }
 
-        [JsonPropertyName("organization")]
-        public string Organization { get; set; }
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
     }
-
-
-    public class branchlistModel : PageModel
+    public class memberlistModel : PageModel
     {
-        public BranchResponseModel BranchResponse { get; set; }
+        public MemberResponseModel MemberResponse { get; set; }
 
         public string? RequestId { get; set; }
 
@@ -54,7 +52,7 @@ namespace POS.Pages
         private readonly ILogger<ErrorModel> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public branchlistModel(IHttpClientFactory httpClientFactory, ILogger<ErrorModel> logger)
+        public memberlistModel(IHttpClientFactory httpClientFactory, ILogger<ErrorModel> logger)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
@@ -77,15 +75,15 @@ namespace POS.Pages
                 accessToken = HttpContext.Session.GetString("SessionToken");
 
                 client.DefaultRequestHeaders.Add("x-session-key", accessToken);
-                var response = await client.GetAsync("http://127.0.0.1:5000/api/branch/list_branchs");
+                var response = await client.GetAsync("http://127.0.0.1:5000/api/members/list_members");
                 response.EnsureSuccessStatusCode(); // This will throw an exception if the status code is not successful
 
                 var responseContent = await response.Content.ReadAsStringAsync();
-                BranchResponse = JsonSerializer.Deserialize<BranchResponseModel>(responseContent);
+                MemberResponse = JsonSerializer.Deserialize<MemberResponseModel>(responseContent);
             }
 
             return Page();
         }
-    }
 
+    }
 }

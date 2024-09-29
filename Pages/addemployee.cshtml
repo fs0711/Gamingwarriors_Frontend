@@ -124,29 +124,43 @@
                             <a asp-page="/index"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Games</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/game.svg" alt="img"><span> Game</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/gamelist">Game List</a></li>
                                 <li><a asp-page="/addgame">Add Game</a></li>
+                                <li><a asp-page="/gamelist">Game List</a></li>
+                                <li><a asp-page="/editgame">Edit Game</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/organization.svg" alt="img"><span> Organization</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addorganization">Add Organization</a></li>
+                                <li><a asp-page="/organizationlist">List Organization</a></li>
+                                <li><a asp-page="/editorganization">Edit Organization</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/branch.svg" alt="img"><span> Branch</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/branchlist">List Branch</a></li>
+                                <li><a asp-page="/editbranch">Edit Branch</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                @* <li><a asp-page="/salesreport">Sales List</a></li> *@
+                                @* <li><a asp-page="/SerialData">Manage</a></li> *@
                                 <li><a asp-page="/pos">POS</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Member</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/customerlist">List Members</a></li>
-                                <li><a asp-page="/addmember">Add Member </a></li>
-                                <li><a asp-page="/addmemberprofile">Add Member Profile </a></li>
-                                @* <li><a asp-page="/addcard">Add Card</a></li>
-                                <li><a asp-page="/cardlist">Card List</a></li> *@
-                                <li><a asp-page="/branchlist">List Branches</a></li>
-                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/addmember">Add Member</a></li>
+                                <li><a asp-page="/memberlist">List Members</a></li>
+                                <li><a asp-page="/editmember">Edit Member</a></li>
+                                <li><a asp-page="/memberprofile">Member Profile</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
@@ -156,16 +170,31 @@
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Employess</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/addemployee">New Employee </a></li>
-                                <li><a asp-page="/employeelist">Employees List</a></li>
+                                <li><a asp-page="/addemployee">Add User </a></li>
+                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
+                                <li><a asp-page="/edituser">Edit User</a></li>
+                                <li><a asp-page="/userlist">List Users</a></li>
+                                <li><a asp-page="/userhistory">User History</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/debitcard.svg" alt="img"><span>Rfcard</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addrfcard">Add Rfcard </a></li>
+                                <li><a asp-page="/rfcardlist">Rfcard List </a></li>
+                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
+                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/settings.svg" alt="img"><span> Settings</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/grouppermission">Group Permissions</a></li>
+                                <li><a asp-page="/config">Configuration</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -178,8 +207,8 @@
             <div class="content">
                 <div class="page-header">
                     <div class="page-title">
-                        <h4>Employee Management</h4>
-                        <h6>Add/Update Employee</h6>
+                        <h4>User Management</h4>
+                        <h6>Add/Update User</h6>
                     </div>
                 </div>
 
@@ -203,11 +232,6 @@
                                         <input asp-for="Employee.Gender" class="form-control" />
                                         <span asp-validation-for="Employee.Gender" class="text-danger"></span>
                                     </div>
-                                    <div class="form-group">
-                                        <label asp-for="Employee.Organization"></label>
-                                        <input asp-for="Employee.Organization" class="form-control" />
-                                        <span asp-validation-for="Employee.Organization" class="text-danger"></span>
-                                    </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
@@ -217,14 +241,16 @@
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Employee.Card_id"></label>
-                                        <input asp-for="Employee.Card_id" class="form-control" />
+                                        <select asp-for="Employee.Card_id" class="form-control" asp-items="Model.rfcardList"></select>
                                         <span asp-validation-for="Employee.Card_id" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Employee.Branch"></label>
-                                        <input asp-for="Employee.Branch" class="form-control" />
-                                        <span asp-validation-for="Employee.Branch" class="text-danger"></span>
-                                    </div>
+                                     <label asp-for="Employee.Organization"></label>
+                                        <select asp-for="Employee.Organization" class="form-control" asp-items="Model.OrganizationList" id="EMP_Organization">
+                                     <option value="">Select an Organization</option>
+                                     </select>
+                                     <span asp-validation-for="Employee.Organization" class="text-danger"></span>
+                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
@@ -239,7 +265,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Employee.Manager"></label>
-                                        <input asp-for="Employee.Manager" class="form-control" />
+                                        <select asp-for="Employee.Manager" class="form-control" asp-items="Model.ManagerList"></select>
                                         <span asp-validation-for="Employee.Manager" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -253,6 +279,13 @@
                                         <label asp-for="Employee.City"></label>
                                         <input asp-for="Employee.City" class="form-control" />
                                         <span asp-validation-for="Employee.City" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Employee.Branch"></label>
+                                        <select asp-for="Employee.Branch" class="form-control" id="EMP_Branch">
+                                            <option value="">Select a branch</option>
+                                        </select>
+                                        <span asp-validation-for="Employee.Branch" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -279,6 +312,44 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#EMP_Organization').change(function () {
+                var selectedOrganizationId = $(this).val();
+
+                if (selectedOrganizationId) {
+                    $.ajax({
+                        url: '/addemployee?handler=Branches',
+                        type: 'GET',
+                        data: { organizationId: selectedOrganizationId },
+                        success: function (data) {
+                            var branchSelect = $('#EMP_Branch');
+                            branchSelect.empty(); // Clear existing options
+                            branchSelect.append($('<option>').val('').text('Select a branch')); // Default option
+
+                            $.each(data, function (index, branch) {
+                                branchSelect.append($('<option>').val(branch.value).text(branch.text));
+                            });
+                        },
+                        error: function () {
+                            alert('Failed to load branches.');
+                        }
+                    });
+                } else {
+                    // Clear branches if no organization is selected
+                    $('#EMP_Branch').empty().append($('<option>').val('').text('Select a branch'));
+                }
+            });
+        });
+
+    </script>
+
+
+
+    
+
 
 
     <script src="assets/js/jquery-3.6.0.min.js"></script>

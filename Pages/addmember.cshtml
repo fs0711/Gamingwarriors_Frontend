@@ -124,29 +124,43 @@
                             <a asp-page="/index"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Games</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/game.svg" alt="img"><span> Game</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/gamelist">Game List</a></li>
                                 <li><a asp-page="/addgame">Add Game</a></li>
+                                <li><a asp-page="/gamelist">Game List</a></li>
+                                <li><a asp-page="/editgame">Edit Game</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/organization.svg" alt="img"><span> Organization</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addorganization">Add Organization</a></li>
+                                <li><a asp-page="/organizationlist">List Organization</a></li>
+                                <li><a asp-page="/editorganization">Edit Organization</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/branch.svg" alt="img"><span> Branch</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/branchlist">List Branch</a></li>
+                                <li><a asp-page="/editbranch">Edit Branch</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                @* <li><a asp-page="/salesreport">Sales List</a></li> *@
+                                @* <li><a asp-page="/SerialData">Manage</a></li> *@
                                 <li><a asp-page="/pos">POS</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Member</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/customerlist">List Members</a></li>
-                                <li><a asp-page="/addmember">Add Member </a></li>
-                                <li><a asp-page="/addmemberprofile">Add Member Profile </a></li>
-                                @* <li><a asp-page="/addcard">Add Card</a></li>
-                                <li><a asp-page="/cardlist">Card List</a></li> *@
-                                <li><a asp-page="/branchlist">List Branches</a></li>
-                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/addmember">Add Member</a></li>
+                                <li><a asp-page="/memberlist">List Members</a></li>
+                                <li><a asp-page="/editmember">Edit Member</a></li>
+                                <li><a asp-page="/memberprofile">Member Profile</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
@@ -156,16 +170,31 @@
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Employess</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/addemployee">New Employee </a></li>
-                                <li><a asp-page="/employeelist">Employees List</a></li>
+                                <li><a asp-page="/addemployee">Add User </a></li>
+                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
+                                <li><a asp-page="/edituser">Edit User</a></li>
+                                <li><a asp-page="/userlist">List Users</a></li>
+                                <li><a asp-page="/userhistory">User History</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/debitcard.svg" alt="img"><span>Rfcard</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addrfcard">Add Rfcard </a></li>
+                                <li><a asp-page="/rfcardlist">Rfcard List </a></li>
+                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
+                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/settings.svg" alt="img"><span> Settings</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/grouppermission">Group Permissions</a></li>
+                                <li><a asp-page="/config">Configuration</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -200,9 +229,9 @@
                                         <span asp-validation-for="Member.City" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Member.Rechargeamount"></label>
-                                        <input asp-for="Member.Rechargeamount" class="form-control" />
-                                        <span asp-validation-for="Member.Rechargeamount" class="text-danger"></span>
+                                        <label asp-for="Member.Credit"></label>
+                                        <input asp-for="Member.Credit" class="form-control" />
+                                        <span asp-validation-for="Member.Credit" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
@@ -212,9 +241,14 @@
                                         <span asp-validation-for="Member.Email" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Member.Level"></label>
-                                        <input asp-for="Member.Level" class="form-control" />
-                                        <span asp-validation-for="Member.Level" class="text-danger"></span>
+                                        <label asp-for="Member.Membership_Level "></label>
+                                        <input asp-for="Member.Membership_Level " class="form-control" />
+                                        <span asp-validation-for="Member.Membership_Level " class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Member.Type "></label>
+                                        <input asp-for="Member.Type " class="form-control" />
+                                        <span asp-validation-for="Member.Type " class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
@@ -231,11 +265,15 @@
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="Member.CardId"></label>
-                                        <input asp-for="Member.CardId" class="form-control" />
-                                        <span asp-validation-for="Member.CardId" class="text-danger"></span>
+                                        <label asp-for="Member.Card_id"></label>
+                                        <select asp-for="Member.Card_id" class="form-control" asp-items="Model.rfcardList"></select>
+                                        <span asp-validation-for="Member.Card_id " class="text-danger"></span>
                                     </div>
-                                   
+                                    <div class="form-group">
+                                        <label asp-for="Member.Reward"></label>
+                                        <input asp-for="Member.Reward" class="form-control" />
+                                        <span asp-validation-for="Member.Reward" class="text-danger"></span>
+                                    </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <button type="submit" class="btn btn-submit me-2">Submit</button>

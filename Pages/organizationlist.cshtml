@@ -1,5 +1,5 @@
 ﻿@page
-@model branchlistModel
+@model organizationlistModel
 @{
     ViewData["Title"] = "Error";
 }
@@ -208,11 +208,11 @@
             <div class="content">
                 <div class="page-header">
                     <div class="page-title">
-                        <h4>Branch List</h4>
-                        <h6>Manage your Branch</h6>
+                        <h4>Organization List</h4>
+                        <h6>Manage your Organization</h6>
                     </div>
                     <div class="page-btn">
-                        <a href="addstore.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-2">Add Branch</a>
+                        <a href="addstore.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-2">Add Organization</a>
                     </div>
                 </div>
 
@@ -284,32 +284,27 @@
                             <table class="table table-bordered datanew">
                                 <thead>
                                     <tr>
-                                        <th>Branch ID</th>
+                                       @*  <th>ID</th> *@
                                         <th>Name</th>
-                                        <th>City</th>
-                                        <th>Opening Time</th>
-                                        <th>Closing Time</th>
-                                        <th>Organziation</th>
-
+                                        <th>Address</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.BranchResponse.ResponseData)
+                                    @foreach (var item in Model.OrgResponse.ResponseData)
                                     {
                                         <tr>
-                                            <td>@item.BranchId</td>
+                                            @* <td>@item.Id</td> *@
                                             <td>@item.Name</td>
-                                            <td>@item.City</td>
-                                            <td>@item.OpeningTime</td>
-                                            <td>@item.ClosingTime</td>
-                                            <td>@item.Organization</td>
-
+                                            <td>@item.Address</td>
+                                            <td>@item.CpEmailAddress</td>
+                                            <td>@string.Join(", ", item.CpPhoneNumber)</td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
                 </div>
 

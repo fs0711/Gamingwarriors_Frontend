@@ -6,81 +6,74 @@ using System.Text.Json;
 using System.Text;
 using System.Net.Http;
 using System.IO.Ports;
+using static POS.Pages.addemployeeModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace POS.Pages
 {
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [IgnoreAntiforgeryToken]
     public class addbranchModel : PageModel
     {
-        
-        
 
         public string? RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-
         private readonly IHttpClientFactory _httpClientFactory;
-
         private readonly ILogger<addbranchModel> _logger;
 
         public addbranchModel(IHttpClientFactory httpClientFactory, ILogger<addbranchModel> logger)
         {
-            _logger = logger;
             _httpClientFactory = httpClientFactory;
+            _logger = logger;
         }
-        [BindProperty]
-        [Required]
-        public string name { get; set; }
 
         [BindProperty]
-        [Required]
-        public string users { get; set; }
+        public BranchInputModel Branch { get; set; }
 
-        //[BindProperty]
-        //[Required]
-        //[DataType(DataType.Password)]
-        //public string Password { get; set; }
+        public string SelectedOrganizationId { get; set; } // Property to hold the selected person's ID
 
-        //[BindProperty]
-        //[Required]
-        //[Phone]
-        //public string Phone { get; set; }
+        public SelectList OrganizationList { get; set; }
 
-        //[BindProperty]
-        //[Required]
-        //public string BranchID { get; set; }
+        public string SelectedUserId { get; set; } // Property to hold the selected person's ID
 
-        [BindProperty]
-        [Required]
-        public string city { get; set; }
+        public SelectList UsersList { get; set; }
 
-        [BindProperty]
-        [Required]
-        public string game_types { get; set; }
-
-        //[BindProperty]
-        //[Required]
-        //[EmailAddress]
-        //public string Email { get; set; }
-
-        [BindProperty]
-        [Required]
-        public string opening_time { get; set; }
+        public string SelectedTypeId { get; set; }
+        public SelectList TypeList { get; set; }
 
 
-        [BindProperty]
-        [Required]
-        public string closing_time { get; set; }
+        public class BranchInputModel
+        {
+            [Required]
+            public string Name { get; set; }
+
+            [Required]
+            public string User { get; set; }
+
+            [Required]
+            public string City { get; set; }
+
+            [Required]
+            public List<string> Game_Type { get; set; }
+
+            [Required]
+            public string Opening_Time { get; set; }
+
+            [Required]
+            public string Closing_Time { get; set; }
+
+            [Required]
+            public string Organization { get; set; }
+
+
+        }
+
 
         [BindProperty]
         public string SerialData { get; set; }
 
 
-
-
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             try
             {
@@ -96,47 +89,100 @@ namespace POS.Pages
                 _logger.LogError(ex, "Error reading from serial port.");
                 SerialData = "Error reading from serial port.";
             }
-
-
-
             var accessToken = HttpContext.Session.GetString("SessionToken");
             if (string.IsNullOrEmpty(accessToken))
             {
                 return RedirectToPage("/signin");
             }
+            var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+
+            var responseorg = await client.GetAsync("http://127.0.0.1:5000/api/organization/list_organization");
+
+            if (responseorg.IsSuccessStatusCode)
+            {
+                var json = await responseorg.Content.ReadAsStringAsync();
+
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    var responseDataOrg = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+                    var orgs = responseDataOrg.Select(orgs => new
+                    {
+                        Id = orgs.GetProperty("id").GetString(),
+                        Name = orgs.GetProperty("name").GetString()
+                    }).ToList();
+
+                    OrganizationList = new SelectList(orgs, "Id", "Name");
+                }
+            }
+
+            //var response = await client.GetAsync("http://127.0.0.1:5000/api/static-data");
+
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    var json = await response.Content.ReadAsStringAsync();
+            //    using (JsonDocument doc = JsonDocument.Parse(json))
+            //    {
+            //        var typesArray = doc.RootElement.GetProperty("game_types").EnumerateArray();
+
+            //        var types = typesArray.Select(types => new
+            //        {
+            //            Id = types.GetProperty("user_role_id").GetInt32(),
+            //            Name = types.GetProperty("name").GetString()
+            //        }).ToList();
+
+            //        TypeList = new SelectList(types, "Id", "Name");
+            //    }
+            //}
+
+            var responseuser = await client.GetAsync("http://127.0.0.1:5000/api/users/read");
+
+            if (responseuser.IsSuccessStatusCode)
+            {
+                var json = await responseuser.Content.ReadAsStringAsync();
+
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    var responseDataUser = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+                    var users = responseDataUser.Select(users => new
+                    {
+                        Id = users.GetProperty("id").GetString(),
+                        Name = users.GetProperty("name").GetString()
+                    }).ToList();
+
+                    UsersList = new SelectList(users, "Id", "Name");
+                }
+            }
+
+
 
             return Page();
         }
 
+
         public async Task<IActionResult> OnPostAsync()
         {
-            
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+
 
             var client = _httpClientFactory.CreateClient();
-            var accessToken = HttpContext.Session.GetString("SessionToken");
-            client.DefaultRequestHeaders.Add("x-session-key", accessToken);
 
+            var accessToken = HttpContext.Session.GetString("SessionToken");
+
+            client.DefaultRequestHeaders.Add("x-session-key", accessToken);
 
             var branchData = new
             {
-                //BranchName,
-                //Phone,
-                //BranchID,
-                //Location,
-                //Email
-                name,
-                users,
-                city,
-                game_types,
-                opening_time,
-                closing_time
+                name = Branch.Name,
+                city = Branch.City,
+                users = Branch.User,
+                game_types = Branch.Game_Type,
+                opening_time = Branch.Opening_Time,
+                closing_time = Branch.Closing_Time,
+                organization = Branch.Organization,
 
             };
-
 
             var content = new StringContent(JsonSerializer.Serialize(branchData), Encoding.UTF8, "application/json");
 
@@ -144,18 +190,21 @@ namespace POS.Pages
 
             if (response.IsSuccessStatusCode)
             {
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                HttpContext.Session.SetString("FullResponse", responseContent);
-                return RedirectToPage("/response");
-                //return Page ();
+                //var responseContent = await response.Content.ReadAsStringAsync();
+                //HttpContext.Session.SetString("FullResponse", responseContent);
+                //return RedirectToPage("/response");
+                return Page();
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "An error occurred while adding the branch.");
-                return Page();
+                _logger.LogError("Error posting member data: {StatusCode}", response.StatusCode);
+                ModelState.AddModelError(string.Empty, "There was an error saving the member.");
+               // return Page();
+                return RedirectToPage("/Index");
             }
         }
-    }
 
+
+
+    }
 }

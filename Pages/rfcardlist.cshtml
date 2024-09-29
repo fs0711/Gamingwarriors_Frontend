@@ -1,8 +1,8 @@
 ﻿@page
-@model employeelistModel
+@model rfcardlistModel
 @{
-    ViewData["Title"] = "Error";
 }
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -125,29 +125,43 @@
                             <a asp-page="/index"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Games</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/game.svg" alt="img"><span> Game</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/gamelist">Game List</a></li>
                                 <li><a asp-page="/addgame">Add Game</a></li>
+                                <li><a asp-page="/gamelist">Game List</a></li>
+                                <li><a asp-page="/editgame">Edit Game</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/organization.svg" alt="img"><span> Organization</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addorganization">Add Organization</a></li>
+                                <li><a asp-page="/organizationlist">List Organization</a></li>
+                                <li><a asp-page="/editorganization">Edit Organization</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/branch.svg" alt="img"><span> Branch</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/branchlist">List Branch</a></li>
+                                <li><a asp-page="/editbranch">Edit Branch</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                @* <li><a asp-page="/salesreport">Sales List</a></li> *@
+                                @* <li><a asp-page="/SerialData">Manage</a></li> *@
                                 <li><a asp-page="/pos">POS</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Member</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/customerlist">List Members</a></li>
-                                <li><a asp-page="/addmember">Add Member </a></li>
-                                <li><a asp-page="/addmemberprofile">Add Member Profile </a></li>
-                                @* <li><a asp-page="/addcard">Add Card</a></li>
-                                <li><a asp-page="/cardlist">Card List</a></li> *@
-                                <li><a asp-page="/branchlist">List Branches</a></li>
-                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/addmember">Add Member</a></li>
+                                <li><a asp-page="/memberlist">List Members</a></li>
+                                <li><a asp-page="/editmember">Edit Member</a></li>
+                                <li><a asp-page="/memberprofile">Member Profile</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
@@ -157,33 +171,46 @@
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Employess</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/addemployee">New Employee </a></li>
-                                <li><a asp-page="/employeelist">Employees List</a></li>
+                                <li><a asp-page="/addemployee">Add User </a></li>
+                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
+                                <li><a asp-page="/edituser">Edit User</a></li>
+                                <li><a asp-page="/userlist">List Users</a></li>
+                                <li><a asp-page="/userhistory">User History</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/debitcard.svg" alt="img"><span>Rfcard</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addrfcard">Add Rfcard </a></li>
+                                <li><a asp-page="/rfcardlist">Rfcard List </a></li>
+                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
+                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/settings.svg" alt="img"><span> Settings</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/grouppermission">Group Permissions</a></li>
+                                <li><a asp-page="/config">Configuration</a></li>
                             </ul>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-
-
         <div class="page-wrapper">
             <div class="content">
                 <div class="page-header">
                     <div class="page-title">
-                        <h4>Employee List</h4>
-                        <h6>Manage your Employee</h6>
+                        <h4>RFCard List</h4>
+                        <h6>Manage your RFCard</h6>
                     </div>
                     <div class="page-btn">
-                        <a href="addcustomer.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img">Add Employee</a>
+                        <a href="addstore.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-2">Add RFCard</a>
                     </div>
                 </div>
 
@@ -221,17 +248,12 @@
                                 <div class="row">
                                     <div class="col-lg-2 col-sm-6 col-12">
                                         <div class="form-group">
-                                            <input type="text" placeholder="Enter Employee Code">
+                                            <input type="text" placeholder="Store Name">
                                         </div>
                                     </div>
                                     <div class="col-lg-2 col-sm-6 col-12">
                                         <div class="form-group">
-                                            <input type="text" placeholder="Enter Employee Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <input type="text" placeholder="Enter Phone Number">
+                                            <input type="text" placeholder="Enter Phone">
                                         </div>
                                     </div>
                                     <div class="col-lg-2 col-sm-6 col-12">
@@ -239,7 +261,15 @@
                                             <input type="text" placeholder="Enter Email">
                                         </div>
                                     </div>
-                                    <div class="col-lg-1 col-sm-6 col-12  ms-auto">
+                                    <div class="col-lg-2 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <select class="select">
+                                                <option>Disable</option>
+                                                <option>Enable</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1 col-sm-6 col-12 ms-auto">
                                         <div class="form-group">
                                             <a class="btn btn-filters ms-auto"><img src="assets/img/icons/search-whites.svg" alt="img"></a>
                                         </div>
@@ -249,52 +279,28 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table  datanew">
+                            <table class="table table-bordered datanew">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <label class="checkboxs">
-                                                <input type="checkbox" id="select-all">
-                                                <span class="checkmarks"></span>
-                                            </label>
-                                        </th>
-                                        <th>Employee Name</th>
-                                        <th>Employee code</th>
-                                        <th>Phone</th>
-                                        <th>email</th>
-                                        <th>Address</th>
-                                        <th>Position</th>
-                                        <th>Action</th>
+@*                                         <th>ID</th> *@
+                                        <th>Card_id</th>
+                                        <th>Assigned</th>
+                                        <th>Organization</th>
+                                        <th>Branch</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <label class="checkboxs">
-                                                <input type="checkbox">
-                                                <span class="checkmarks"></span>
-                                            </label>
-                                        </td>
-                                        <td class="productimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="assets/img/customer/customer1.jpg" alt="product">
-                                            </a>
-                                            <a href="javascript:void(0);">Abc</a>
-                                        </td>
-                                        <td>201</td>
-                                        <td>+12163547758 </td>
-                                        <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1165797e7c7062517469707c617d743f727e7c">[email&#160;protected]</a></td>
-                                        <td>Karachi</td>
-                                        <td>Admin</td>
-                                        <td>
-                                            <a class="me-3" href="editcustomer.html">
-                                                <img src="assets/img/icons/edit.svg" alt="img">
-                                            </a>
-                                            <a class="me-3 confirm-text" href="javascript:void(0);">
-                                                <img src="assets/img/icons/delete.svg" alt="img">
-                                            </a>
-                                        </td>
-                                    </tr>
+                                    @foreach (var item in Model.RfcardResponse.ResponseDatacard)
+                                    {
+                                        <tr>
+                                            @* <td>@item.Id</td> *@
+                                            <td>@item.Card_id</td>
+                                            <td>@item.Status</td>
+                                            <td>@item.Organization</td>
+                                            <td>@item.Branch</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>

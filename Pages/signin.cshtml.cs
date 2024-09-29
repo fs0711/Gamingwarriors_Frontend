@@ -33,17 +33,13 @@ namespace POS.Pages
             public string Password { get; set; }
         }
 
-
         public void OnGet()
         {
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            
 
             var loginData = new
             {
@@ -57,17 +53,23 @@ namespace POS.Pages
 
             if (response.IsSuccessStatusCode)
             {
-                
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var responseObject = JsonSerializer.Deserialize<ResponseModel>(responseContent);
 
                 string accessToken = responseObject.response_data.access_token;
-                
+                string userId = responseObject.response_data.user.id;
+                string branch = responseObject.response_data.user.branch;
+                string organization = responseObject.response_data.user.organization;
+                //string roleName = responseObject.response_data.user.role_name;
+
                 HttpContext.Session.SetString("SessionToken", accessToken);
-                
-                if(accessToken != null)
+                HttpContext.Session.SetString("UserId", userId);
+                HttpContext.Session.SetString("UserBranch", branch);
+                HttpContext.Session.SetString("UserOrganization", organization);
+                //HttpContext.Session.SetString("UserRole", roleName);
+
+                if (accessToken != null)
                 {
-                    
                     return RedirectToPage("/Index");
                 }
                 return RedirectToPage("/Response");
@@ -78,18 +80,27 @@ namespace POS.Pages
                 return Page();
             }
         }
+
         public class ResponseModel
         {
             public int response_code { get; set; }
             public ResponseData response_data { get; set; }
             public string response_message { get; set; }
         }
-        
+
         public class ResponseData
         {
             public string access_token { get; set; }
-            // You can include other properties if needed
+            public long expiry_time { get; set; }
+            public User user { get; set; }
+        }
+
+        public class User
+        {
+            public string id { get; set; }
+            public string branch { get; set; }
+            public string organization { get; set; }
+            public string role_name { get; set; }
         }
     }
-
 }

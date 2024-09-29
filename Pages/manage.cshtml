@@ -1,13 +1,15 @@
 ﻿@page
-@model addgameModel
+@model manageModel
 @{
+    ViewData["Title"] = "POS";
 }
+
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
@@ -18,8 +20,6 @@
 
     <link rel="stylesheet" href="assets/css/animate.css">
 
-    <link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
-
     <link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css">
 
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
@@ -27,17 +27,11 @@
 
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
     <div id="global-loader">
         <div class="whirly-loader"> </div>
     </div>
-@* 
-    <script type="text/javascript">
-        
-            { alert(@fullResponse); }
-        
-        
-    </script> *@
 
     <div class="main-wrapper">
 
@@ -208,111 +202,250 @@
             </div>
         </div>
 
-
-        <div class="page-wrapper">
-            <div class="content">
-                <div class="page-header">
-                    <div class="page-title">
-                        <h4>Add Game</h4>
-                        <h6>Create new game</h6>
-                    </div>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>Point of Sale</h4>
                 </div>
+                <div class="page-btn">
+                    <a href="addbrand.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" class="me-2" alt="img">Balance</a>
+                </div>
+            </div>
+@* 
+                <h1>Available COM Ports</h1>
 
-                <div class="card">
-                    <div class="card-body">
-                        <form method="post">
+                <ul>
+                    @foreach (var port in Model.AvailablePorts)
+                    {
+                        <li>@port</li>
+                    }
+                </ul> *@
+
+
+
+
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-top">
+                        <div class="search-set">
+                            <div class="search-path">
+                                <a class="btn btn-filter" id="filter_search">
+                                    <img src="assets/img/icons/filter.svg" alt="img">
+                                    <span><img src="assets/img/icons/closes.svg" alt="img"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" id="filter_inputs">
+                        <div class="card-body pb-0">
                             <div class="row">
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="Game.Name"></label>
-                                        <input asp-for="Game.Name" class="form-control" />
-                                        <span asp-validation-for="Game.Name" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Game.Organization"></label>
-                                        <select asp-for="Game.Organization" class="form-control" asp-items="Model.OrganizationList" id="GM_Organization">
-                                            <option value="">Select an Organization</option>
-                                        </select>
-                                        <span asp-validation-for="Game.Organization" class="text-danger"></span>
+                                        <input type="text" placeholder="Enter Customer Name">
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="Game.Type"></label>
-                                        <input asp-for="Game.Type" class="form-control" />
-                                        <span asp-validation-for="Game.Type" class="text-danger"></span>
+                                        <input type="text" placeholder="Enter Card Tid">
                                     </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-6 col-12 ms-auto">
                                     <div class="form-group">
-                                        <label asp-for="Game.Branch"></label>
-                                        <select asp-for="Game.Branch" class="form-control" id="GM_Branch">
-                                            <option value="">Select a branch</option>
-                                        </select>
-                                        <span asp-validation-for="Game.Branch" class="text-danger"></span>
+                                        <a class="btn btn-filters ms-auto"><img src="assets/img/icons/search-whites.svg" alt="img"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        @* <div class="col-lg-3 col-sm-6 col-12 d-flex">
+                            <div class="dash-count das1">
+                                <div class="dash-counts">
+                                    <h5>New Card Issue</h5>
+                                </div>
+                                <div class="dash-imgs">
+                                    <i data-feather="user-check"></i>
+                                </div>
+                            </div>
+                        </div> *@
+                        <div class="col-lg-3 col-sm-6 col-12 d-flex">
+                            <div class="dash-count das1">
+                                <div class="dash-counts">
+                                    <h5>Card Recharge</h5>
+                                </div>
+                                <div class="dash-imgs">
+                                    <i data-feather="user-check"></i>
+                                </div>
+                            </div>
+                        </div>
+                        @* <div class="col-lg-3 col-sm-6 col-12 d-flex">
+                            <div class="dash-count das1">
+                                <div class="dash-counts">
+                                    <h5>Balance Inquiry</h5>
+                                </div>
+                                <div class="dash-imgs">
+                                    <i data-feather="user-check"></i>
+                                </div>
+                            </div>
+                        </div> *@
+                        @* <div class="col-lg-3 col-sm-6 col-12 d-flex">
+                            <div class="dash-count das1">
+                                <div class="dash-counts">
+                                    <h5>New Customer</h5>
+                                </div>
+                                <div class="dash-imgs">
+                                    <i data-feather="user-check"></i>
+                                </div>
+                            </div>
+                        </div> *@
+                    </div>
+                    @* <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Card Number</label>
+                                        <input type="text">
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="Game.GameLevel"></label>
-                                        <input asp-for="Game.GameLevel" class="form-control" />
-                                        <span asp-validation-for="Game.GameLevel" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Game.UnitStatus"></label>
-                                        <input asp-for="Game.UnitStatus" class="form-control" />
-                                        <span asp-validation-for="Game.UnitStatus" class="text-danger"></span>
+                                        <label>Customer Name</label>
+                                        <input type="text">
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="Game.Cost"></label>
-                                        <input asp-for="Game.Cost" class="form-control" />
-                                        <span asp-validation-for="Game.Cost" class="text-danger"></span>
+                                        <label>Phone</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="text">
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <button type="submit" class="btn btn-submit me-2">Submit</button>
-                                    <a asp-page="/productlist" class="btn btn-cancel">Cancel</a>
+                                    <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
+                                    <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                </div>
-
-            </div>
+                        </div>
+                    </div> *@
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="post">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-6 col-12">
+                                            <div class="form-group">
+                                                <label asp-for="Recharge.CardTid"></label>
+                                                <input asp-for="Recharge.CardTid" class="form-control" />
+                                                <span asp-validation-for="Recharge.CardTid" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-6 col-12">
+                                            <div class="form-group">
+                                                <label asp-for="Recharge.RechargeAmount"></label>
+                                                <input asp-for="Recharge.RechargeAmount" class="form-control" />
+                                                <span asp-validation-for="Recharge.RechargeAmount" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <button type="submit" class="btn btn-submit me-2">Submit</button>
+                                            <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                   @*  <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Customer Id</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Customer Name</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
+                                    <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div> *@
+                   @*  <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Card Tid</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Customer Name</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>Current Amount</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <a href="javascript:void(0);" class="btn btn-submit me-2">Recharge</a>
+                                    <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div> *@
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#GM_Organization').change(function () {
-                var selectedOrganizationId = $(this).val();
-
-                if (selectedOrganizationId) {
-                    $.ajax({
-                        url: '/addgame?handler=Branches',
-                        type: 'GET',
-                        data: { organizationId: selectedOrganizationId },
-                        success: function (data) {
-                            var branchSelect = $('#GM_Branch');
-                            branchSelect.empty(); // Clear existing options
-                            branchSelect.append($('<option>').val('').text('Select a branch')); // Default option
-
-                            $.each(data, function (index, branch) {
-                                branchSelect.append($('<option>').val(branch.value).text(branch.text));
-                            });
-                        },
-                        error: function () {
-                            alert('Failed to load branches.');
-                        }
+                <script>
+                    document.getElementById('card-issue').addEventListener('click', function () {
+                        document.getElementById('header-text').textContent = 'done';
                     });
-                } else {
-                    // Clear branches if no organization is selected
-                    $('#GM_Branch').empty().append($('<option>').val('').text('Select a branch'));
-                }
-            });
-        });
 
-    </script>
+                    // Initialize Feather icons
+                    feather.replace();
+                </script>
+
+                <script>
+                    // Log the serial data to the browser's console
+                    console.log("Serial Data: @Model.ReceivedData");
+                </script>
 
 
     <script src="assets/js/jquery-3.6.0.min.js"></script>
@@ -326,10 +459,9 @@
 
     <script src="assets/js/bootstrap.bundle.min.js"></script>
 
-    <script src="assets/plugins/select2/js/select2.min.js"></script>
-
-    <script src="assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
-    <script src="assets/plugins/sweetalert/sweetalerts.min.js"></script>
+    <script src="assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="assets/plugins/apexchart/chart-data.js"></script>
 
     <script src="assets/js/script.js"></script>
+
 </body>

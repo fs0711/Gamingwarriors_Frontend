@@ -124,26 +124,43 @@
                             <a asp-page="/index"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Games</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/game.svg" alt="img"><span> Game</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/gamelist">Game List</a></li>
                                 <li><a asp-page="/addgame">Add Game</a></li>
+                                <li><a asp-page="/gamelist">Game List</a></li>
+                                <li><a asp-page="/editgame">Edit Game</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/organization.svg" alt="img"><span> Organization</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addorganization">Add Organization</a></li>
+                                <li><a asp-page="/organizationlist">List Organization</a></li>
+                                <li><a asp-page="/editorganization">Edit Organization</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/branch.svg" alt="img"><span> Branch</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/branchlist">List Branch</a></li>
+                                <li><a asp-page="/editbranch">Edit Branch</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
                             <ul>
+                                @* <li><a asp-page="/SerialData">Manage</a></li> *@
                                 <li><a asp-page="/pos">POS</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Member</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/customerlist">List Members</a></li>
-                                <li><a asp-page="/addmember">Add Member </a></li>
-                                <li><a asp-page="/addmemberprofile">Add Member Profile </a></li>
-                                <li><a asp-page="/branchlist">List Branches</a></li>
-                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/addmember">Add Member</a></li>
+                                <li><a asp-page="/memberlist">List Members</a></li>
+                                <li><a asp-page="/editmember">Edit Member</a></li>
+                                <li><a asp-page="/memberprofile">Member Profile</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
@@ -153,10 +170,24 @@
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Employess</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/addemployee">New Employee </a></li>
-                                <li><a asp-page="/employeelist">Employees List</a></li>
+                                <li><a asp-page="/addemployee">Add User </a></li>
+                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
+                                <li><a asp-page="/edituser">Edit User</a></li>
+                                <li><a asp-page="/userlist">List Users</a></li>
+                                <li><a asp-page="/userhistory">User History</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/debitcard.svg" alt="img"><span>Rfcard</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addrfcard">Add Rfcard </a></li>
+                                <li><a asp-page="/rfcardlist">Rfcard List </a></li>
+                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
+                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+
                             </ul>
                         </li>
                         <li class="submenu">
@@ -170,7 +201,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="page-wrapper">
             <div class="content">

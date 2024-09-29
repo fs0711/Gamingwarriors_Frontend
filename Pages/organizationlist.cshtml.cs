@@ -1,51 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text.Json;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
-using System.Text.Json;
 
 namespace POS.Pages
 {
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [IgnoreAntiforgeryToken]
 
-    public class BranchResponseModel
+    public class OrgResponseModel
     {
         [JsonPropertyName("response_code")]
         public int ResponseCode { get; set; }
 
         [JsonPropertyName("response_data")]
-        public List<BranchResponseData> ResponseData { get; set; }
+        public List<ResponseData> ResponseData { get; set; }
 
         [JsonPropertyName("response_message")]
         public string ResponseMessage { get; set; }
     }
 
-    public class BranchResponseData
+    public class ResponseData
     {
-        [JsonPropertyName("branch_id")]
-        public string BranchId { get; set; }
-
-        [JsonPropertyName("city")]
-        public string City { get; set; }
-
-        [JsonPropertyName("closing_time")]
-        public int ClosingTime { get; set; }
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
 
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("opening_time")]
-        public int OpeningTime { get; set; }
+        [JsonPropertyName("address")]
+        public string Address { get; set; }
 
-        [JsonPropertyName("organization")]
-        public string Organization { get; set; }
+        [JsonPropertyName("cp_email_address")]
+        public string CpEmailAddress { get; set; }
+
+        [JsonPropertyName("cp_phone_number")]
+        public List<string> CpPhoneNumber { get; set; }
     }
 
-
-    public class branchlistModel : PageModel
+    public class organizationlistModel : PageModel
     {
-        public BranchResponseModel BranchResponse { get; set; }
+        public OrgResponseModel OrgResponse { get; set; }
 
         public string? RequestId { get; set; }
 
@@ -54,7 +50,7 @@ namespace POS.Pages
         private readonly ILogger<ErrorModel> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public branchlistModel(IHttpClientFactory httpClientFactory, ILogger<ErrorModel> logger)
+        public organizationlistModel(IHttpClientFactory httpClientFactory,ILogger<ErrorModel> logger)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
@@ -77,15 +73,18 @@ namespace POS.Pages
                 accessToken = HttpContext.Session.GetString("SessionToken");
 
                 client.DefaultRequestHeaders.Add("x-session-key", accessToken);
-                var response = await client.GetAsync("http://127.0.0.1:5000/api/branch/list_branchs");
+                var response = await client.GetAsync("http://127.0.0.1:5000/api/organization/list_organization");
                 response.EnsureSuccessStatusCode(); // This will throw an exception if the status code is not successful
 
                 var responseContent = await response.Content.ReadAsStringAsync();
-                BranchResponse = JsonSerializer.Deserialize<BranchResponseModel>(responseContent);
+                OrgResponse = JsonSerializer.Deserialize<OrgResponseModel>(responseContent);
             }
 
             return Page();
         }
+
+
+
     }
 
 }

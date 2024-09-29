@@ -13,11 +13,11 @@ namespace POS.Pages
         
         }
 
-        public string Port { get; set; }
 
-        public IActionResult OnGet(string port)
+
+        public IActionResult OnGet()
         {
-            Port = port;
+
             var accessToken = HttpContext.Session.GetString("SessionToken");
             if (string.IsNullOrEmpty(accessToken))
             {

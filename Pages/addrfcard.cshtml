@@ -1,8 +1,8 @@
-﻿@page 
-@model addcardModel
+﻿@page
+@model POS.Pages.addrfcardModel
 @{
-    ViewData["Title"] = "Error";
 }
+
 
 
 <head>
@@ -125,29 +125,43 @@
                             <a asp-page="/index"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Games</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/game.svg" alt="img"><span> Game</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/gamelist">Game List</a></li>
                                 <li><a asp-page="/addgame">Add Game</a></li>
+                                <li><a asp-page="/gamelist">Game List</a></li>
+                                <li><a asp-page="/editgame">Edit Game</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/organization.svg" alt="img"><span> Organization</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addorganization">Add Organization</a></li>
+                                <li><a asp-page="/organizationlist">List Organization</a></li>
+                                <li><a asp-page="/editorganization">Edit Organization</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/branch.svg" alt="img"><span> Branch</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/branchlist">List Branch</a></li>
+                                <li><a asp-page="/editbranch">Edit Branch</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                @* <li><a asp-page="/salesreport">Sales List</a></li> *@
+                                @* <li><a asp-page="/SerialData">Manage</a></li> *@
                                 <li><a asp-page="/pos">POS</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Member</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/customerlist">List Members</a></li>
-                                <li><a asp-page="/addmember">Add Member </a></li>
-                                <li><a asp-page="/addmemberprofile">Add Member Profile </a></li>
-                                @* <li><a asp-page="/addcard">Add Card</a></li>
-                                <li><a asp-page="/cardlist">Card List</a></li> *@
-                                <li><a asp-page="/branchlist">List Branches</a></li>
-                                <li><a asp-page="/addbranch">Add Branch</a></li>
+                                <li><a asp-page="/addmember">Add Member</a></li>
+                                <li><a asp-page="/memberlist">List Members</a></li>
+                                <li><a asp-page="/editmember">Edit Member</a></li>
+                                <li><a asp-page="/memberprofile">Member Profile</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
@@ -157,16 +171,31 @@
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Employess</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-page="/addemployee">New Employee </a></li>
-                                <li><a asp-page="/employeelist">Employees List</a></li>
+                                <li><a asp-page="/addemployee">Add User </a></li>
+                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
+                                <li><a asp-page="/edituser">Edit User</a></li>
+                                <li><a asp-page="/userlist">List Users</a></li>
+                                <li><a asp-page="/userhistory">User History</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="assets/img/icons/debitcard.svg" alt="img"><span>Rfcard</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a asp-page="/addrfcard">Add Rfcard </a></li>
+                                <li><a asp-page="/rfcardlist">Rfcard List </a></li>
+                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
+                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+
                             </ul>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/settings.svg" alt="img"><span> Settings</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/grouppermission">Group Permissions</a></li>
+                                <li><a asp-page="/config">Configuration</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -174,46 +203,107 @@
             </div>
         </div>
 
-
         <div class="page-wrapper">
             <div class="content">
                 <div class="page-header">
                     <div class="page-title">
-                        <h4>Card Management</h4>
-                        <h6>Add/Update Card</h6>
+                        <h4>RFCard Management</h4>
+                        <h6>Add/Update RFCard</h6>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
                         <form method="post">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label asp-for="Card.CardNumber"></label>
-                                        <input asp-for="Card.CardNumber" class="form-control" />
-                                        <span asp-validation-for="Card.CardNumber" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label asp-for="Card.Branch"></label>
-                                        <input asp-for="Card.Branch" class="form-control" />
-                                        <span asp-validation-for="Card.Branch" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <button type="submit" class="btn btn-submit me-2">Submit</button>
-                                    <a asp-page="/productlist" class="btn btn-cancel">Cancel</a>
-                                </div>
-                            </div>
-                        </form>
+    <div class="row">
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="form-group">
+                <label asp-for="RF.UID"></label>
+                <input asp-for="RF.UID" class="form-control" value="@Model.ExtractedcardUID" />
+                <span asp-validation-for="RF.UID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="form-group">
+                <label asp-for="RF.Organization"></label>
+                                        <select asp-for="RF.Organization" class="form-control" asp-items="Model.OrganizationList" id="RF_Organization">
+                                            <option value="">Select an Organization</option>
+                                        </select>
+                <span asp-validation-for="RF.Organization" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="form-group">
+                <label asp-for="RF.Branch"></label>
+                                        <select asp-for="RF.Branch" class="form-control" id="RF_Branch">
+                                            <option value="">Select a branch</option>
+                                        </select>
+                <span asp-validation-for="RF.Branch" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="form-group">
+                <label asp-for="RF.Assigned"></label>
+                <select asp-for="RF.Assigned" class="form-control">
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>
+                <span asp-validation-for="RF.Assigned" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <button type="submit" class="btn btn-submit me-2">Submit</button>
+            <a asp-page="/productlist" class="btn btn-cancel">Cancel</a>
+        </div>
+    </div>
+</form>
+
                     </div>
                 </div>
 
             </div>
         </div>
     </div>
+
+
+    <script>
+
+        console.log("Serial Data: @Model.ExtractedcardUID");
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+        $(document).ready(function () {
+            $('#RF_Organization').change(function () {
+                var selectedOrganizationId = $(this).val();
+
+                if (selectedOrganizationId) {
+                    $.ajax({
+                        url: '/addrfcard?handler=Branches',
+                        type: 'GET',
+                        data: { organizationId: selectedOrganizationId },
+                        success: function (data) {
+                            var branchSelect = $('#RF_Branch');
+                            branchSelect.empty(); // Clear existing options
+                            branchSelect.append($('<option>').val('').text('Select a branch')); // Default option
+
+                            $.each(data, function (index, branch) {
+                                branchSelect.append($('<option>').val(branch.value).text(branch.text));
+                            });
+                        },
+                        error: function () {
+                            alert('Failed to load branches.');
+                        }
+                    });
+                } else {
+                    // Clear branches if no organization is selected
+                    $('#RF_Branch').empty().append($('<option>').val('').text('Select a branch'));
+                }
+            });
+        });
+
+</script>
+
 
     <script src="assets/js/jquery-3.6.0.min.js"></script>
 
