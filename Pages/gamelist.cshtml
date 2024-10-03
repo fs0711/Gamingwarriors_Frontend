@@ -4,6 +4,7 @@
 }
 
 
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -117,22 +118,21 @@
 
         </div>
 
-
         <div class="sidebar" id="sidebar">
-            <div class="sidebar-inner slimscroll">
-                <div id="sidebar-menu" class="sidebar-menu">
-                    <ul>
-                        <li class="active">
-                            <a asp-page="/index"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
-                        </li>
-                        <li class="submenu">
+        <div class="sidebar-inner slimscroll">
+            <div id="sidebar-menu" class="sidebar-menu">
+                <ul>
+                    <li class="active">
+                       <a asp-page="/index"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
+                    </li>
+                    <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/game.svg" alt="img"><span> Game</span> <span class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a asp-page="/addgame">Add Game</a></li>
-                                <li><a asp-page="/gamelist">Game List</a></li>
-                                <li><a asp-page="/editgame">Edit Game</a></li>
-                            </ul>
-                        </li>
+                        <ul>
+                            <li><a asp-page="/addgame">Add Game</a></li>
+                            <li><a asp-page="/gamelist">Game List</a></li>
+                            <li><a asp-page="/editgame">Edit Game</a></li>
+                        </ul>
+                    </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/organization.svg" alt="img"><span> Organization</span> <span class="menu-arrow"></span></a>
                             <ul>
@@ -149,61 +149,58 @@
                                 <li><a asp-page="/editbranch">Edit Branch</a></li>
                             </ul>
                         </li>
-                        <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
-                            <ul>
+                    <li class="submenu">
+                        <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
+                        <ul>
                                 @* <li><a asp-page="/SerialData">Manage</a></li> *@
-                                <li><a asp-page="/pos">POS</a></li>
-                            </ul>
-                        </li>
-                        <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Member</span> <span class="menu-arrow"></span></a>
-                            <ul>
+                           <li><a asp-page="/pos">POS</a></li>
+                        </ul>
+                    </li>
+                    <li class="submenu">
+                        <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Member</span> <span class="menu-arrow"></span></a>
+                        <ul>
                                 <li><a asp-page="/addmember">Add Member</a></li>
                                 <li><a asp-page="/memberlist">List Members</a></li>
                                 <li><a asp-page="/editmember">Edit Member</a></li>
                                 <li><a asp-page="/memberprofile">Member Profile</a></li>
-                            </ul>
-                        </li>
-                        <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/time.svg" alt="img"><span> Report</span> <span class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a asp-page="/salesreport">Invoice Report</a></li>
-                            </ul>
-                        </li>
-                        <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a asp-page="/addemployee">Add User </a></li>
-                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
-                                <li><a asp-page="/edituser">Edit User</a></li>
-                                <li><a asp-page="/userlist">List Users</a></li>
-                                <li><a asp-page="/userhistory">User History</a></li>
+                        </ul>
+                    </li>
+                    <li class="submenu">
+                        <a href="javascript:void(0);"><img src="assets/img/icons/time.svg" alt="img"><span> Report</span> <span class="menu-arrow"></span></a>
+                        <ul>
+                           <li><a asp-page="/salesreport">Invoice Report</a></li>
+                        </ul>
+                    </li>
+                    <li class="submenu">
+                        <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
+                        <ul>
+                            <li><a asp-page="/addemployee">Add User </a></li>
+                            <li><a asp-page="/edituser">Edit User</a></li>
+                            <li><a asp-page="/userlist">List Users</a></li>
+                            <li><a asp-page="/userhistory">User History</a></li>
 
-                            </ul>
-                        </li>
+                        </ul>
+                    </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/debitcard.svg" alt="img"><span>Rfcard</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/addrfcard">Add Rfcard </a></li>
                                 <li><a asp-page="/rfcardlist">Rfcard List </a></li>
-                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
-                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+                                <li><a asp-page="/editrfcard">Edit Rfcard</a></li>
 
                             </ul>
                         </li>
-                        <li class="submenu">
-                            <a href="javascript:void(0);"><img src="assets/img/icons/settings.svg" alt="img"><span> Settings</span> <span class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a asp-page="/grouppermission">Group Permissions</a></li>
-                                <li><a asp-page="/config">Configuration</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                    <li class="submenu">
+                        <a href="javascript:void(0);"><img src="assets/img/icons/settings.svg" alt="img"><span> Settings</span> <span class="menu-arrow"></span></a>
+                        <ul>
+                            <li><a asp-page="/grouppermission">Group Permissions</a></li>
+                            <li><a asp-page="/config">Configuration</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
-
+    </div>
 
         <div class="page-wrapper">
             <div class="content">
@@ -213,20 +210,72 @@
                         <h6>Manage your Games</h6>
                     </div>
                     <div class="page-btn">
-                        <a href="addstore.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-2">Add Game</a>
+                        <a href="addcustomer.html" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img">Add Game</a>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
                         <div class="table-top">
-                            @* <div class="form-group">
-                                <label asp-for="ORG.Organization"></label>
-                                <select asp-for="ORG.Organization" class="form-control" asp-items="Model.OrganizationList" id="EMP_Organization">
-                                    <option value="">Select an Organization</option>
-                                </select>
-                            </div> *@
+                            <div class="search-set">
+                                <div class="search-path">
+                                    <a class="btn btn-filter" id="filter_search">
+                                        <img src="assets/img/icons/filter.svg" alt="img">
+                                        <span><img src="assets/img/icons/closes.svg" alt="img"></span>
+                                    </a>
+                                </div>
+                                <div class="search-input">
+                                    <a class="btn btn-searchset"><img src="assets/img/icons/search-white.svg" alt="img"></a>
+                                </div>
+                            </div>
+                            <div class="wordset">
+                                <ul>
+                                    <li>
+                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="assets/img/icons/pdf.svg" alt="img"></a>
+                                    </li>
+                                    <li>
+                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="assets/img/icons/excel.svg" alt="img"></a>
+                                    </li>
+                                    <li>
+                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="assets/img/icons/printer.svg" alt="img"></a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
+
+                        <div class="card" id="filter_inputs">
+                            <div class="card-body pb-0">
+                                <div class="row">
+                                    <div class="col-lg-2 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <input type="text" placeholder="Enter Customer Code">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <input type="text" placeholder="Enter Customer Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <input type="text" placeholder="Enter Phone Number">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <input type="text" placeholder="Enter Email">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1 col-sm-6 col-12  ms-auto">
+                                        <div class="form-group">
+                                            <a class="btn btn-filters ms-auto"><img src="assets/img/icons/search-whites.svg" alt="img"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div class="table-responsive">
                             <table class="table table-bordered datanew">
                                 <thead>

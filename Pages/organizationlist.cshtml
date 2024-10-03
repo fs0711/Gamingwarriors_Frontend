@@ -175,7 +175,6 @@
                             <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/addemployee">Add User </a></li>
-                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
                                 <li><a asp-page="/edituser">Edit User</a></li>
                                 <li><a asp-page="/userlist">List Users</a></li>
                                 <li><a asp-page="/userhistory">User History</a></li>
@@ -187,8 +186,7 @@
                             <ul>
                                 <li><a asp-page="/addrfcard">Add Rfcard </a></li>
                                 <li><a asp-page="/rfcardlist">Rfcard List </a></li>
-                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
-                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+                                <li><a asp-page="/editrfcard">Edit Rfcard</a></li>
 
                             </ul>
                         </li>
@@ -284,7 +282,7 @@
                             <table class="table table-bordered datanew">
                                 <thead>
                                     <tr>
-                                       @*  <th>ID</th> *@
+                                        <th>ID</th> 
                                         <th>Name</th>
                                         <th>Address</th>
                                         <th>Email</th>
@@ -295,7 +293,7 @@
                                     @foreach (var item in Model.OrgResponse.ResponseData)
                                     {
                                         <tr>
-                                            @* <td>@item.Id</td> *@
+                                            <td>@item.Id</td>
                                             <td>@item.Name</td>
                                             <td>@item.Address</td>
                                             <td>@item.CpEmailAddress</td>

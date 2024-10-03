@@ -174,7 +174,6 @@
                             <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/addemployee">Add User </a></li>
-                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
                                 <li><a asp-page="/edituser">Edit User</a></li>
                                 <li><a asp-page="/userlist">List Users</a></li>
                                 <li><a asp-page="/userhistory">User History</a></li>
@@ -186,8 +185,7 @@
                             <ul>
                                 <li><a asp-page="/addrfcard">Add Rfcard </a></li>
                                 <li><a asp-page="/rfcardlist">Rfcard List </a></li>
-                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
-                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+                                <li><a asp-page="/editrfcard">Edit Rfcard</a></li>
 
                             </ul>
                         </li>
@@ -219,7 +217,7 @@
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="form-group">
                 <label asp-for="RF.UID"></label>
-                <input asp-for="RF.UID" class="form-control" value="@Model.ExtractedcardUID" />
+                                        <input asp-for="RF.UID" class="form-control" id="uidDisplay"  value="@Model.ExtractedcardUID" />
                 <span asp-validation-for="RF.UID" class="text-danger"></span>
             </div>
         </div>
@@ -268,7 +266,8 @@
 
     <script>
 
-        console.log("Serial Data: @Model.ExtractedcardUID");
+        var extractedCardUID = '@Html.Raw(Model.ExtractedcardUID ?? "")';
+        console.log("Serial Data: " + extractedCardUID);
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -284,8 +283,8 @@
                         data: { organizationId: selectedOrganizationId },
                         success: function (data) {
                             var branchSelect = $('#RF_Branch');
-                            branchSelect.empty(); // Clear existing options
-                            branchSelect.append($('<option>').val('').text('Select a branch')); // Default option
+                            branchSelect.empty(); 
+                            branchSelect.append($('<option>').val('').text('Select a branch')); 
 
                             $.each(data, function (index, branch) {
                                 branchSelect.append($('<option>').val(branch.value).text(branch.text));
@@ -296,13 +295,32 @@
                         }
                     });
                 } else {
-                    // Clear branches if no organization is selected
                     $('#RF_Branch').empty().append($('<option>').val('').text('Select a branch'));
                 }
             });
         });
 
 </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                $.ajax({
+                    url: '/addrfcard/ExtractedUID', // Ensure this endpoint returns the latest UID
+                    type: 'GET',
+                    success: function (data) {
+                        $('#uidDisplay').text(data); // Update a specific element to show the latest UID
+                    },
+                    error: function (error) {
+                        console.error("Error fetching UID:", error);
+                    }
+                });
+            }, 1000); // Fetch every second
+        });
+    </script>
+
+@*      <div id="uidDisplay">@Model.ExtractedcardUID</div> *@
 
 
     <script src="assets/js/jquery-3.6.0.min.js"></script>

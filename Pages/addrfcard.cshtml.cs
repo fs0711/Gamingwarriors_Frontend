@@ -5,14 +5,16 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using POS.Services;
+using System.Timers; // Ensure this is the correct timer you want to use
 
 namespace POS.Pages
 {
-    public class addrfcardModel : PageModel
+    public class addrfcardModel : PageModel, IDisposable
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<addrfcardModel> _logger;
         private readonly SerialPortService _serialPortService;
+        private System.Timers.Timer _dataFetchTimer; // Explicitly specify System.Timers.Timer
 
         [BindProperty]
         public string ReceivedData { get; private set; }
@@ -28,6 +30,11 @@ namespace POS.Pages
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _serialPortService = serialPortService;
+
+            _dataFetchTimer = new System.Timers.Timer(1000); 
+            _dataFetchTimer.Elapsed += OnTimedEvent;
+            _dataFetchTimer.AutoReset = true;
+            _dataFetchTimer.Enabled = true;
         }
 
         [BindProperty]
@@ -60,7 +67,6 @@ namespace POS.Pages
 
             client.DefaultRequestHeaders.Add("x-session-key", accessToken);
 
-            // Fetch organizations
             var responseOrg = await client.GetAsync("http://127.0.0.1:5000/api/organization/list_organization");
 
             if (responseOrg.IsSuccessStatusCode)
@@ -81,10 +87,20 @@ namespace POS.Pages
                 }
             }
 
-            // Initialize empty BranchList
             BranchList = new SelectList(new List<SelectListItem>());
 
-            // Handle SerialPortService data
+            FetchDataFromSerialPort();
+
+            return Page();
+        }
+
+        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            FetchDataFromSerialPort();
+        }
+
+        private void FetchDataFromSerialPort()
+        {
             ReceivedData = _serialPortService.GetLatestData();
 
             if (!string.IsNullOrEmpty(ReceivedData))
@@ -92,8 +108,6 @@ namespace POS.Pages
                 cleanedData = ReceivedData.Replace("&#xD;", "").Replace("&#xA;", "").Trim();
                 ExtractedcardUID = cleanedData.Substring(cleanedData.IndexOf(':') + 1).Replace(" ", "").Trim().ToUpper();
             }
-
-            return Page();
         }
 
         [HttpGet]
@@ -104,7 +118,6 @@ namespace POS.Pages
 
             client.DefaultRequestHeaders.Add("x-session-key", accessToken);
 
-            // Fetch the branches from the API
             var response = await client.GetAsync("http://127.0.0.1:5000/api/branch/list_branchs_ids");
 
             if (response.IsSuccessStatusCode)
@@ -115,7 +128,6 @@ namespace POS.Pages
                 {
                     var responseDataBranch = doc.RootElement.GetProperty("response_data").EnumerateArray();
 
-                    // Filter branches based on the selected organizationId
                     var filteredBranches = responseDataBranch
                         .Where(branch => branch.GetProperty("organization").GetString() == organizationId)
                         .Select(branch => new
@@ -125,14 +137,12 @@ namespace POS.Pages
                         })
                         .ToList();
 
-                    // Return filtered branches
                     return new JsonResult(filteredBranches.Select(b => new SelectListItem { Value = b.Id, Text = b.Name }));
                 }
             }
 
             return new JsonResult(new List<SelectListItem>());
         }
-
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -163,6 +173,11 @@ namespace POS.Pages
                 ModelState.AddModelError(string.Empty, "There was an error saving the member.");
                 return Page();
             }
+        }
+
+        public void Dispose()
+        {
+            _dataFetchTimer.Dispose();
         }
     }
 }

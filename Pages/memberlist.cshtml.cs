@@ -40,6 +40,17 @@ namespace POS.Pages
 
         [JsonPropertyName("type")]
         public string Type { get; set; }
+
+        [JsonPropertyName("parent")]
+        public string Parent { get; set; }
+
+
+        [JsonPropertyName("card_id")]
+        public string Card_Id { get; set; }
+
+
+        [JsonPropertyName("organization")]
+        public string Organization { get; set; }
     }
     public class memberlistModel : PageModel
     {

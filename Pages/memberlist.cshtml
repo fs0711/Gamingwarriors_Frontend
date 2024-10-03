@@ -174,7 +174,6 @@
                             <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/addemployee">Add User </a></li>
-                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
                                 <li><a asp-page="/edituser">Edit User</a></li>
                                 <li><a asp-page="/userlist">List Users</a></li>
                                 <li><a asp-page="/userhistory">User History</a></li>
@@ -186,8 +185,7 @@
                             <ul>
                                 <li><a asp-page="/addrfcard">Add Rfcard </a></li>
                                 <li><a asp-page="/rfcardlist">Rfcard List </a></li>
-                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
-                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
+                                <li><a asp-page="/editrfcard">Edit Rfcard</a></li>
 
                             </ul>
                         </li>
@@ -202,7 +200,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="page-wrapper">
             <div class="content">
@@ -289,7 +286,11 @@
                                         <th>Membership Level</th>
                                         <th>Email Address</th>
                                         <th>Phone Number</th>
+                                        <th>Card ID</th>
                                         <th>Type</th>
+                                        <th>Parent</th>
+                                        <th>Organization</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -301,7 +302,12 @@
                                             <td>@item.MembershipLevel</td>
                                             <td>@item.EmailAddress</td>
                                             <td>@item.PhoneNumber</td>
+                                            <td>@item.Card_Id</td>
                                             <td>@item.Type</td>
+                                            <td>@item.Parent</td>
+
+                                            <td>@item.Organization</td>
+
                                         </tr>
                                     }
                                 </tbody>

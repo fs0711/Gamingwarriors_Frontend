@@ -30,6 +30,8 @@ namespace POS.Pages
 
         public string SelectedrfcardId { get; set; } // Property to hold the selected person's ID
         public SelectList rfcardList { get; set; }
+        public SelectList parentList { get; set; }
+
 
         public class MemberInputModel
         {
@@ -64,6 +66,9 @@ namespace POS.Pages
 
             [Required]
             public string Type { get; set; }
+
+            [Required]
+            public string Parent { get; set; }
 
 
         }
@@ -100,10 +105,32 @@ namespace POS.Pages
                         Id = rfcards.GetProperty("card_id").GetString(),
                         card_id = rfcards.GetProperty("id").GetString()
                     }).ToList();
-
+                        
                     rfcardList = new SelectList(rfcards, "card_id", "Id");
                 }
             }
+
+            //client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+            //var responsemember = await client.GetAsync("http://127.0.0.1:5000/api/members/list_members_id");
+
+            //if (responsemember.IsSuccessStatusCode)
+            //{
+            //    var json = await responsemember.Content.ReadAsStringAsync();
+
+
+            //    using (JsonDocument doc = JsonDocument.Parse(json))
+            //    {
+            //        var responseDatamember = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+            //        var members = responseDatamember.Select(mem => new
+            //        {
+            //            Id = mem.GetProperty("member_id").GetString(),
+            //            member_id = mem.GetProperty("id").GetString()
+            //        }).ToList();
+
+            //        parentList = new SelectList(members, "member_id", "Id");
+            //    }
+            //}
 
 
             return Page();
@@ -129,7 +156,8 @@ namespace POS.Pages
                 city = Member.City,
                 credit = Member.Credit,
                 reward = Member.Reward,
-                type = Member.Type
+                type = Member.Type,
+                parent = Member.Parent,
             };
 
             var content = new StringContent(JsonSerializer.Serialize(memberData), Encoding.UTF8, "application/json");

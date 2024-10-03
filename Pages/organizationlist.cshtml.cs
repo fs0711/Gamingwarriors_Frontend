@@ -23,7 +23,7 @@ namespace POS.Pages
 
     public class ResponseData
     {
-        [JsonPropertyName("id")]
+        [JsonPropertyName("organization_id")]
         public string Id { get; set; }
 
         [JsonPropertyName("name")]
