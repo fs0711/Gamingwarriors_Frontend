@@ -242,6 +242,13 @@
                                         <select asp-for="Employee.Card_id" class="form-control" asp-items="Model.rfcardList"></select>
                                         <span asp-validation-for="Employee.Card_id" class="text-danger"></span>
                                     </div>
+                                     @* <div class="form-group">
+                                        <label asp-for="Employee.Card_id"></label>
+                                        <input asp-for="Employee.Card_id" class="form-control" value="@Model.ExtractedcardUID" />
+                                        <span asp-validation-for="Employee.Card_id" class="text-danger"></span>
+                                    </div> *@
+
+
                                     <div class="form-group">
                                      <label asp-for="Employee.Organization"></label>
                                         <select asp-for="Employee.Organization" class="form-control" asp-items="Model.OrganizationList" id="EMP_Organization">
@@ -311,6 +318,11 @@
         </div>
     </div>
 
+    <script>
+
+        console.log("Serial Data: @Model.ExtractedcardUID");
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -336,19 +348,27 @@
                         }
                     });
                 } else {
-                    // Clear branches if no organization is selected
+
                     $('#EMP_Branch').empty().append($('<option>').val('').text('Select a branch'));
                 }
             });
         });
 
-    </script>
+    // <script>
+    //     async function fetchData() {
+    //         try {
+    //             const response = await fetch('/addemployee?handler=ReceiveData');
+    //             const data = await response.json();
+    //             if (data.extractedCardUID) {
+    //                 document.getElementById('Cardid').value = data.extractedCardUID; 
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error);
+    //         }
+    //     }
 
-
-
-    
-
-
+    //     setInterval(fetchData, 100); 
+    // </script>
 
     <script src="assets/js/jquery-3.6.0.min.js"></script>
 

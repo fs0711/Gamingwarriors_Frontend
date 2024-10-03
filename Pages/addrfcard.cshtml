@@ -151,7 +151,7 @@
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                @* <li><a asp-page="/SerialData">Manage</a></li> *@
+                                <li><a asp-page="/SerialData">Manage</a></li>
                                 <li><a asp-page="/pos">POS</a></li>
                             </ul>
                         </li>
@@ -174,6 +174,7 @@
                             <a href="javascript:void(0);"><img src="assets/img/icons/user2.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a asp-page="/addemployee">Add User </a></li>
+                                <li><a asp-page="/assignuser">Assign Branch/Organization</a></li>
                                 <li><a asp-page="/edituser">Edit User</a></li>
                                 <li><a asp-page="/userlist">List Users</a></li>
                                 <li><a asp-page="/userhistory">User History</a></li>
@@ -185,7 +186,8 @@
                             <ul>
                                 <li><a asp-page="/addrfcard">Add Rfcard </a></li>
                                 <li><a asp-page="/rfcardlist">Rfcard List </a></li>
-                                <li><a asp-page="/editrfcard">Edit Rfcard</a></li>
+                                <li><a asp-page="/assignrfcardorg">Assign Rfcard to Organization </a></li>
+                                <li><a asp-page="/assignrfcardbra">Assign Rfcard to Branch</a></li>
 
                             </ul>
                         </li>
@@ -213,48 +215,53 @@
                 <div class="card">
                     <div class="card-body">
                         <form method="post">
-    <div class="row">
-        <div class="col-lg-3 col-sm-6 col-12">
-            <div class="form-group">
-                <label asp-for="RF.UID"></label>
-                                        <input asp-for="RF.UID" class="form-control" id="uidDisplay"  value="@Model.ExtractedcardUID" />
-                <span asp-validation-for="RF.UID" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-lg-3 col-sm-6 col-12">
-            <div class="form-group">
-                <label asp-for="RF.Organization"></label>
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label asp-for="RF.UID"></label>
+                                        <input asp-for="RF.UID" class="form-control" value="@Model.ExtractedcardUID" />
+                                        <span asp-validation-for="RF.UID" class="text-danger"></span>
+                                    </div>
+                                    @* <div class="form-group">
+                                        <label asp-for="RF.UID"></label>
+                                        <input asp-for="RF.UID" class="form-control" id="rfUidInput" value="@Model.ExtractedcardUID" readonly />
+                                        <span asp-validation-for="RF.UID" class="text-danger"></span>
+                                    </div> *@
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label asp-for="RF.Organization"></label>
                                         <select asp-for="RF.Organization" class="form-control" asp-items="Model.OrganizationList" id="RF_Organization">
                                             <option value="">Select an Organization</option>
                                         </select>
-                <span asp-validation-for="RF.Organization" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-lg-3 col-sm-6 col-12">
-            <div class="form-group">
-                <label asp-for="RF.Branch"></label>
+                                        <span asp-validation-for="RF.Organization" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label asp-for="RF.Branch"></label>
                                         <select asp-for="RF.Branch" class="form-control" id="RF_Branch">
                                             <option value="">Select a branch</option>
                                         </select>
-                <span asp-validation-for="RF.Branch" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-lg-3 col-sm-6 col-12">
-            <div class="form-group">
-                <label asp-for="RF.Assigned"></label>
-                <select asp-for="RF.Assigned" class="form-control">
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                </select>
-                <span asp-validation-for="RF.Assigned" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-lg-12">
-            <button type="submit" class="btn btn-submit me-2">Submit</button>
-            <a asp-page="/productlist" class="btn btn-cancel">Cancel</a>
-        </div>
-    </div>
-</form>
+                                        <span asp-validation-for="RF.Branch" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label asp-for="RF.Assigned"></label>
+                                        <select asp-for="RF.Assigned" class="form-control">
+                                            <option value="true">True</option>
+                                            <option value="false">False</option>
+                                        </select>
+                                        <span asp-validation-for="RF.Assigned" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <button type="submit" class="btn btn-submit me-2">Submit</button>
+                                    <a asp-page="/productlist" class="btn btn-cancel">Cancel</a>
+                                </div>
+                            </div>
+                        </form>
 
                     </div>
                 </div>
@@ -266,12 +273,11 @@
 
     <script>
 
-        var extractedCardUID = '@Html.Raw(Model.ExtractedcardUID ?? "")';
-        console.log("Serial Data: " + extractedCardUID);
+        console.log("Serial Data: @Model.ExtractedcardUID");
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+    <script>
         $(document).ready(function () {
             $('#RF_Organization').change(function () {
                 var selectedOrganizationId = $(this).val();
@@ -283,8 +289,8 @@
                         data: { organizationId: selectedOrganizationId },
                         success: function (data) {
                             var branchSelect = $('#RF_Branch');
-                            branchSelect.empty(); 
-                            branchSelect.append($('<option>').val('').text('Select a branch')); 
+                            branchSelect.empty();
+                            branchSelect.append($('<option>').val('').text('Select a branch'));
 
                             $.each(data, function (index, branch) {
                                 branchSelect.append($('<option>').val(branch.value).text(branch.text));
@@ -295,34 +301,56 @@
                         }
                     });
                 } else {
+
                     $('#RF_Branch').empty().append($('<option>').val('').text('Select a branch'));
                 }
             });
         });
 
-</script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </script>
     <script>
-        $(document).ready(function () {
-            setInterval(function () {
-                $.ajax({
-                    url: '/addrfcard/ExtractedUID', // Ensure this endpoint returns the latest UID
-                    type: 'GET',
-                    success: function (data) {
-                        $('#uidDisplay').text(data); // Update a specific element to show the latest UID
-                    },
-                    error: function (error) {
-                        console.error("Error fetching UID:", error);
-                    }
-                });
-            }, 1000); // Fetch every second
-        });
+        async function fetchData() {
+            try {
+                const response = await fetch('/addrfcard?handler=ReceiveData');
+                const data = await response.json();
+                if (data.extractedCardUID) {
+                    document.getElementById('RF_UID').value = data.extractedCardUID; 
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        setInterval(fetchData, 100); 
     </script>
 
-@*      <div id="uidDisplay">@Model.ExtractedcardUID</div> *@
+
+  @*   @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+
+                function fetchCardUID() {
+                    $.ajax({
+                        url: '/addrfcard?handler=ReceiveAndFetchCards', 
+                        type: 'GET',
+                        success: function (data) {
+                            if (data.card_id) {
+                                $('#rfUidInput').val(data.card_id);
+                            }
+                        },
+                        error: function () {
+                            console.error('Error fetching card UID');
+                        }
+                    });
+                }
 
 
+                setInterval(fetchCardUID, 100);
+            });
+        </script>
+    }
+ *@
     <script src="assets/js/jquery-3.6.0.min.js"></script>
 
     <script src="assets/js/feather.min.js"></script>

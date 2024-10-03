@@ -6,6 +6,7 @@ using System.Text;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
+using POS.Services;
 
 
 
@@ -28,15 +29,23 @@ namespace POS.Pages
 
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<addemployeeModel> _logger;
+        private readonly SerialPortService _serialPortService;
 
-        public addemployeeModel(IHttpClientFactory httpClientFactory, ILogger<addemployeeModel> logger)
+
+        public addemployeeModel(IHttpClientFactory httpClientFactory, ILogger<addemployeeModel> logger, SerialPortService serialPortService)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _serialPortService = serialPortService;
         }
         [BindProperty]
         public EmployeeInputModel Employee { get; set; }
         public EmployeeViewModel Emp { get; set; } = new EmployeeViewModel();
+
+        public string ReceivedData { get; private set; }
+
+        public string cleanedData { get; private set; }
+        public string ExtractedcardUID { get; private set; }
 
         public string SelectedRoleId { get; set; }
         public SelectList RoleList { get; set; }
@@ -52,6 +61,9 @@ namespace POS.Pages
         public string SelectedrfcardId { get; set; } // Property to hold the selected person's ID
 
         public SelectList rfcardList { get; set; }
+
+        public SelectList cardList { get; set; }
+
 
         public string SelectedManagerId { get; set; } // Property to hold the selected person's ID
 
@@ -103,6 +115,9 @@ namespace POS.Pages
 
 
         }
+
+
+
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -208,10 +223,58 @@ namespace POS.Pages
                 }
             }
 
-
+            //cardList = new SelectList(new List<SelectListItem>());
 
             return Page();
         }
+
+        //[HttpGet]
+        //public async Task<JsonResult> OnGetDataAsync()
+        //{
+        //    ReceivedData = _serialPortService.GetLatestData();
+        //    if (!string.IsNullOrEmpty(ReceivedData))
+        //    {
+        //        cleanedData = ReceivedData.Replace("&#xD;", "").Replace("&#xA;", "").Trim();
+        //        ExtractedcardUID = cleanedData.Substring(cleanedData.IndexOf(':') + 1).Replace(" ", "").Trim().ToUpper();
+        //    }
+
+        //    return new JsonResult(new { extractedCardUID = ExtractedcardUID });
+        //}
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> OnGetCardsAsync()
+        //{
+        //    var client = _httpClientFactory.CreateClient();
+        //    var accessToken = HttpContext.Session.GetString("SessionToken");
+        //    var responsecards = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcard_ids");
+
+        //    if (responsecards.IsSuccessStatusCode)
+        //    {
+        //        var json = await responsecards.Content.ReadAsStringAsync();
+
+        //        using (JsonDocument doc = JsonDocument.Parse(json))
+        //        {
+        //            var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+        //            string targetCardUid = "C3CD1204";
+
+        //            var filteredCards = responseDatarfcard
+        //                .Where(card => card.GetProperty("card_uid").GetString() == targetCardUid)
+        //                .Select(card => new
+        //                {
+        //                    CardId = card.GetProperty("card_id").GetString(),
+        //                    Id = card.GetProperty("id").GetString()
+        //                })
+        //                .ToList();
+
+
+        //            return new JsonResult(filteredCards.Select(b => new SelectListItem { Value = b.Id, Text = b.CardId }));
+        //        }
+        //    }
+        //    return new JsonResult(new List<SelectListItem>());
+        //}
+
 
 
         [HttpGet]
@@ -253,6 +316,7 @@ namespace POS.Pages
 
 
 
+
         public async Task<IActionResult> OnPostAsync()
         {
 
@@ -285,10 +349,8 @@ namespace POS.Pages
 
             if (response.IsSuccessStatusCode)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                HttpContext.Session.SetString("FullResponse", responseContent);
-                return RedirectToPage("/response");
-                //return Page();
+                
+                return Page();
             }
             else
             {
@@ -298,11 +360,6 @@ namespace POS.Pages
                 return RedirectToPage("/response");
             }
         }
-
-
-
-
-
 
 
     }

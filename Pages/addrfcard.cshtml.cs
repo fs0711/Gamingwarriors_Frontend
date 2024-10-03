@@ -5,16 +5,15 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using POS.Services;
-using System.Timers; // Ensure this is the correct timer you want to use
+using System.Net.Http.Headers;
 
 namespace POS.Pages
 {
-    public class addrfcardModel : PageModel, IDisposable
+    public class addrfcardModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<addrfcardModel> _logger;
         private readonly SerialPortService _serialPortService;
-        private System.Timers.Timer _dataFetchTimer; // Explicitly specify System.Timers.Timer
 
         [BindProperty]
         public string ReceivedData { get; private set; }
@@ -30,11 +29,6 @@ namespace POS.Pages
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _serialPortService = serialPortService;
-
-            _dataFetchTimer = new System.Timers.Timer(1000); 
-            _dataFetchTimer.Elapsed += OnTimedEvent;
-            _dataFetchTimer.AutoReset = true;
-            _dataFetchTimer.Enabled = true;
         }
 
         [BindProperty]
@@ -89,26 +83,81 @@ namespace POS.Pages
 
             BranchList = new SelectList(new List<SelectListItem>());
 
-            FetchDataFromSerialPort();
+           
 
             return Page();
         }
 
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
-        {
-            FetchDataFromSerialPort();
-        }
-
-        private void FetchDataFromSerialPort()
+        [HttpGet]
+        public async Task<JsonResult> OnGetReceiveDataAsync()
         {
             ReceivedData = _serialPortService.GetLatestData();
-
             if (!string.IsNullOrEmpty(ReceivedData))
             {
                 cleanedData = ReceivedData.Replace("&#xD;", "").Replace("&#xA;", "").Trim();
                 ExtractedcardUID = cleanedData.Substring(cleanedData.IndexOf(':') + 1).Replace(" ", "").Trim().ToUpper();
             }
+
+            return new JsonResult(new { extractedCardUID = ExtractedcardUID });
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> OnGetReceiveAndFetchCardsAsync()
+        //{
+        //    var client = _httpClientFactory.CreateClient();
+        //    var accessToken = HttpContext.Session.GetString("SessionToken");
+
+        //    if (!string.IsNullOrEmpty(accessToken))
+        //    {
+        //        client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+        //    }
+
+        //    string extractedCardUID = string.Empty;
+
+        //    var receivedData = _serialPortService.GetLatestData();
+        //    if (!string.IsNullOrEmpty(receivedData))
+        //    {
+        //        var cleanedData = receivedData.Replace("&#xD;", "").Replace("&#xA;", "").Trim();
+        //        extractedCardUID = cleanedData.Substring(cleanedData.IndexOf(':') + 1).Replace(" ", "").Trim().ToUpper();
+
+        //        HttpContext.Session.SetString("ExtractedCardUID", extractedCardUID);
+        //    }
+
+        //    try
+        //    {
+        //        var responseCards = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcard_ids");
+
+        //        if (responseCards.IsSuccessStatusCode)
+        //        {
+        //            var json = await responseCards.Content.ReadAsStringAsync();
+        //            using (var doc = JsonDocument.Parse(json))
+        //            {
+        //                var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+        //                var filteredCard = responseDatarfcard
+        //                    .FirstOrDefault(card => card.GetProperty("card_uid").GetString() == extractedCardUID);
+
+        //                if (filteredCard.ValueKind != JsonValueKind.Undefined)
+        //                {
+        //                    var cardId = filteredCard.GetProperty("card_id").GetString();
+        //                    return new JsonResult(new { card_id = cardId });
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+
+        //    return new JsonResult(new { card_id = (string)null });
+        //}
+
+
+
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> OnGetBranchesAsync(string organizationId)
@@ -118,6 +167,7 @@ namespace POS.Pages
 
             client.DefaultRequestHeaders.Add("x-session-key", accessToken);
 
+            // Fetch the branches from the API
             var response = await client.GetAsync("http://127.0.0.1:5000/api/branch/list_branchs_ids");
 
             if (response.IsSuccessStatusCode)
@@ -128,6 +178,7 @@ namespace POS.Pages
                 {
                     var responseDataBranch = doc.RootElement.GetProperty("response_data").EnumerateArray();
 
+                    // Filter branches based on the selected organizationId
                     var filteredBranches = responseDataBranch
                         .Where(branch => branch.GetProperty("organization").GetString() == organizationId)
                         .Select(branch => new
@@ -137,6 +188,7 @@ namespace POS.Pages
                         })
                         .ToList();
 
+                    // Return filtered branches
                     return new JsonResult(filteredBranches.Select(b => new SelectListItem { Value = b.Id, Text = b.Name }));
                 }
             }
@@ -173,11 +225,6 @@ namespace POS.Pages
                 ModelState.AddModelError(string.Empty, "There was an error saving the member.");
                 return Page();
             }
-        }
-
-        public void Dispose()
-        {
-            _dataFetchTimer.Dispose();
         }
     }
 }
