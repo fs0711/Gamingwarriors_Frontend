@@ -83,10 +83,12 @@ namespace POS.Pages
 
             BranchList = new SelectList(new List<SelectListItem>());
 
-           
+
 
             return Page();
         }
+
+
 
         [HttpGet]
         public async Task<JsonResult> OnGetReceiveDataAsync()
@@ -101,58 +103,7 @@ namespace POS.Pages
             return new JsonResult(new { extractedCardUID = ExtractedcardUID });
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> OnGetReceiveAndFetchCardsAsync()
-        //{
-        //    var client = _httpClientFactory.CreateClient();
-        //    var accessToken = HttpContext.Session.GetString("SessionToken");
-
-        //    if (!string.IsNullOrEmpty(accessToken))
-        //    {
-        //        client.DefaultRequestHeaders.Add("x-session-key", accessToken);
-        //    }
-
-        //    string extractedCardUID = string.Empty;
-
-        //    var receivedData = _serialPortService.GetLatestData();
-        //    if (!string.IsNullOrEmpty(receivedData))
-        //    {
-        //        var cleanedData = receivedData.Replace("&#xD;", "").Replace("&#xA;", "").Trim();
-        //        extractedCardUID = cleanedData.Substring(cleanedData.IndexOf(':') + 1).Replace(" ", "").Trim().ToUpper();
-
-        //        HttpContext.Session.SetString("ExtractedCardUID", extractedCardUID);
-        //    }
-
-        //    try
-        //    {
-        //        var responseCards = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcard_ids");
-
-        //        if (responseCards.IsSuccessStatusCode)
-        //        {
-        //            var json = await responseCards.Content.ReadAsStringAsync();
-        //            using (var doc = JsonDocument.Parse(json))
-        //            {
-        //                var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
-
-        //                var filteredCard = responseDatarfcard
-        //                    .FirstOrDefault(card => card.GetProperty("card_uid").GetString() == extractedCardUID);
-
-        //                if (filteredCard.ValueKind != JsonValueKind.Undefined)
-        //                {
-        //                    var cardId = filteredCard.GetProperty("card_id").GetString();
-        //                    return new JsonResult(new { card_id = cardId });
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-
-        //    return new JsonResult(new { card_id = (string)null });
-        //}
-
+       
 
 
 
@@ -178,7 +129,6 @@ namespace POS.Pages
                 {
                     var responseDataBranch = doc.RootElement.GetProperty("response_data").EnumerateArray();
 
-                    // Filter branches based on the selected organizationId
                     var filteredBranches = responseDataBranch
                         .Where(branch => branch.GetProperty("organization").GetString() == organizationId)
                         .Select(branch => new
@@ -188,7 +138,6 @@ namespace POS.Pages
                         })
                         .ToList();
 
-                    // Return filtered branches
                     return new JsonResult(filteredBranches.Select(b => new SelectListItem { Value = b.Id, Text = b.Name }));
                 }
             }

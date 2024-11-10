@@ -12,9 +12,6 @@ namespace POS.Services
         private readonly ILogger<SerialPortService> _logger;
         private readonly ConcurrentQueue<string> _dataQueue = new ConcurrentQueue<string>();
 
-        
-
-
         public SerialPortService(ILogger<SerialPortService> logger)
         {
             _logger = logger;

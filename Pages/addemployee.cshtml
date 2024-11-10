@@ -237,17 +237,13 @@
                                         <input asp-for="Employee.Email" class="form-control" />
                                         <span asp-validation-for="Employee.Email" class="text-danger"></span>
                                     </div>
+
                                     <div class="form-group">
                                         <label asp-for="Employee.Card_id"></label>
-                                        <select asp-for="Employee.Card_id" class="form-control" asp-items="Model.rfcardList"></select>
+                                        <input asp-for="Employee.Card_id" class="form-control" id="cardUID" readonly />
+                                        <input type="hidden" id="hiddenCardId" name="Employee.HiddenCardId" /> <!-- Hidden field to hold id -->
                                         <span asp-validation-for="Employee.Card_id" class="text-danger"></span>
                                     </div>
-                                     @* <div class="form-group">
-                                        <label asp-for="Employee.Card_id"></label>
-                                        <input asp-for="Employee.Card_id" class="form-control" value="@Model.ExtractedcardUID" />
-                                        <span asp-validation-for="Employee.Card_id" class="text-danger"></span>
-                                    </div> *@
-
 
                                     <div class="form-group">
                                      <label asp-for="Employee.Organization"></label>
@@ -320,7 +316,7 @@
 
     <script>
 
-        console.log("Serial Data: @Model.ExtractedcardUID");
+        console.log("Serial Data: id="cardUID" );
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -336,8 +332,8 @@
                         data: { organizationId: selectedOrganizationId },
                         success: function (data) {
                             var branchSelect = $('#EMP_Branch');
-                            branchSelect.empty(); // Clear existing options
-                            branchSelect.append($('<option>').val('').text('Select a branch')); // Default option
+                            branchSelect.empty(); 
+                            branchSelect.append($('<option>').val('').text('Select a branch')); 
 
                             $.each(data, function (index, branch) {
                                 branchSelect.append($('<option>').val(branch.value).text(branch.text));
@@ -354,21 +350,33 @@
             });
         });
 
-    // <script>
-    //     async function fetchData() {
-    //         try {
-    //             const response = await fetch('/addemployee?handler=ReceiveData');
-    //             const data = await response.json();
-    //             if (data.extractedCardUID) {
-    //                 document.getElementById('Cardid').value = data.extractedCardUID; 
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error);
-    //         }
-    //     }
+    </script>
 
-    //     setInterval(fetchData, 100); 
-    // </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            function fetchCardUID() {
+                $.ajax({
+                    url: '/addemployee?handler=ReceiveAndFetchCards',
+                    type: 'GET',
+                    success: function (data) {
+                        if (data.card_id) { 
+                            $('#cardUID').val(data.card_id);
+                            $('#hiddenCardId').val(data.id);
+                        }
+                    },
+                    error: function () {
+                        console.log("Error fetching data.");
+                    }
+                });
+            }
+
+            setInterval(fetchCardUID, 100);
+        });
+    </script>
 
     <script src="assets/js/jquery-3.6.0.min.js"></script>
 

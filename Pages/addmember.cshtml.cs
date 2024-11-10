@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text;
 using static POS.Pages.SigninModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using POS.Services;
 
 namespace POS.Pages
 {
@@ -19,11 +20,13 @@ namespace POS.Pages
 
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<addmemberModel> _logger;
+        private readonly SerialPortService _serialPortService;
 
-        public addmemberModel(IHttpClientFactory httpClientFactory, ILogger<addmemberModel> logger)
+        public addmemberModel(IHttpClientFactory httpClientFactory, ILogger<addmemberModel> logger, SerialPortService serialPortService)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _serialPortService = serialPortService;
         }
         [BindProperty]
         public MemberInputModel Member { get; set; }
@@ -69,6 +72,9 @@ namespace POS.Pages
 
             [Required]
             public string Parent { get; set; }
+
+            [Required]
+            public string HiddenCardId { get; set; }
 
 
         }
@@ -136,6 +142,59 @@ namespace POS.Pages
             return Page();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> OnGetReceiveAndFetchCardsAsync()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var accessToken = HttpContext.Session.GetString("SessionToken");
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+            }
+
+            string extractedCardUID = string.Empty;
+            var receivedData = _serialPortService.GetLatestData();
+
+            if (!string.IsNullOrEmpty(receivedData))
+            {
+                var cleanedData = receivedData.Replace("&#xD;", "").Replace("&#xA;", "").Trim();
+                extractedCardUID = cleanedData.Substring(cleanedData.IndexOf(':') + 1).Replace(" ", "").Trim().ToUpper();
+
+                HttpContext.Session.SetString("ExtractedCardUID", extractedCardUID);
+            }
+
+            try
+            {
+                var responseCards = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcard_ids");
+                if (responseCards.IsSuccessStatusCode)
+                {
+                    var json = await responseCards.Content.ReadAsStringAsync();
+                    using (var doc = JsonDocument.Parse(json))
+                    {
+                        var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
+                        var filteredCard = responseDatarfcard
+                            .FirstOrDefault(card => card.GetProperty("card_uid").GetString() == extractedCardUID);
+
+                        if (filteredCard.ValueKind != JsonValueKind.Undefined)
+                        {
+                            var cardId = filteredCard.GetProperty("card_id").GetString();
+                            var id = filteredCard.GetProperty("id").GetString(); // Fetch the actual id
+
+                            return new JsonResult(new { card_id = cardId, id = id });  // Return both card_id and id
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching card data.");
+            }
+
+            return new JsonResult(new { card_id = (string)null });
+        }
+
+
         public async Task<IActionResult> OnPostAsync()
         {
 
@@ -152,12 +211,12 @@ namespace POS.Pages
                 membership_level = Member.Membership_Level,
                 phone_number = Member.Mobile,
                 nic = Member.NIC,
-                card_id = Member.Card_id,
+                card_id = Member.HiddenCardId,
                 city = Member.City,
                 credit = Member.Credit,
                 reward = Member.Reward,
                 type = Member.Type,
-                parent = Member.Parent,
+                //parent = Member.Parent,
             };
 
             var content = new StringContent(JsonSerializer.Serialize(memberData), Encoding.UTF8, "application/json");
@@ -166,10 +225,10 @@ namespace POS.Pages
 
             if (response.IsSuccessStatusCode)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                HttpContext.Session.SetString("FullResponse", responseContent);
-                return RedirectToPage("/response");
-                //return Page();
+                //var responseContent = await response.Content.ReadAsStringAsync();
+                //HttpContext.Session.SetString("FullResponse", responseContent);
+                //return RedirectToPage("/response");
+                return Page();
             }
             else
             {

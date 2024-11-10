@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
 using System.Text.Json;
@@ -46,6 +46,9 @@ namespace POS.Pages
 
         public string cleanedData { get; private set; }
         public string ExtractedcardUID { get; private set; }
+
+        public string cardUID { get; private set; }
+
 
         public string SelectedRoleId { get; set; }
         public SelectList RoleList { get; set; }
@@ -110,6 +113,8 @@ namespace POS.Pages
             [Required]
             public string Branch { get; set; }
 
+            [Required]
+            public string HiddenCardId { get; set; }
 
 
 
@@ -121,6 +126,8 @@ namespace POS.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
+
+            
             var accessToken = HttpContext.Session.GetString("SessionToken");
             if (string.IsNullOrEmpty(accessToken))
             {
@@ -196,84 +203,67 @@ namespace POS.Pages
                 }
             }
 
-            var cardData = new
-            {
-                assigned = "False"
 
-            };
-
-            var responserfcard = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcards");
-
-            if (responserfcard.IsSuccessStatusCode)
-            {
-                var json = await responserfcard.Content.ReadAsStringAsync();
-
-
-                using (JsonDocument doc = JsonDocument.Parse(json))
-                {
-                    var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
-
-                    var rfcards = responseDatarfcard.Select(rfcards => new
-                    {
-                        Id = rfcards.GetProperty("card_id").GetString(),
-                        card_id = rfcards.GetProperty("id").GetString()
-                    }).ToList();
-
-                    rfcardList = new SelectList(rfcards, "card_id", "Id");
-                }
-            }
-
-            //cardList = new SelectList(new List<SelectListItem>());
 
             return Page();
         }
 
-        //[HttpGet]
-        //public async Task<JsonResult> OnGetDataAsync()
-        //{
-        //    ReceivedData = _serialPortService.GetLatestData();
-        //    if (!string.IsNullOrEmpty(ReceivedData))
-        //    {
-        //        cleanedData = ReceivedData.Replace("&#xD;", "").Replace("&#xA;", "").Trim();
-        //        ExtractedcardUID = cleanedData.Substring(cleanedData.IndexOf(':') + 1).Replace(" ", "").Trim().ToUpper();
-        //    }
-
-        //    return new JsonResult(new { extractedCardUID = ExtractedcardUID });
-        //}
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> OnGetCardsAsync()
-        //{
-        //    var client = _httpClientFactory.CreateClient();
-        //    var accessToken = HttpContext.Session.GetString("SessionToken");
-        //    var responsecards = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcard_ids");
+        [HttpGet]
+        public async Task<IActionResult> OnGetReceiveAndFetchCardsAsync()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var accessToken = HttpContext.Session.GetString("SessionToken");
 
-        //    if (responsecards.IsSuccessStatusCode)
-        //    {
-        //        var json = await responsecards.Content.ReadAsStringAsync();
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                client.DefaultRequestHeaders.Add("x-session-key", accessToken);
+            }
 
-        //        using (JsonDocument doc = JsonDocument.Parse(json))
-        //        {
-        //            var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
+            string extractedCardUID = string.Empty;
 
-        //            string targetCardUid = "C3CD1204";
+            var receivedData = _serialPortService.GetLatestData();
+            if (!string.IsNullOrEmpty(receivedData))
+            {
+                var cleanedData = receivedData.Replace("&#xD;", "").Replace("&#xA;", "").Trim();
+                extractedCardUID = cleanedData.Substring(cleanedData.IndexOf(':') + 1).Replace(" ", "").Trim().ToUpper();
 
-        //            var filteredCards = responseDatarfcard
-        //                .Where(card => card.GetProperty("card_uid").GetString() == targetCardUid)
-        //                .Select(card => new
-        //                {
-        //                    CardId = card.GetProperty("card_id").GetString(),
-        //                    Id = card.GetProperty("id").GetString()
-        //                })
-        //                .ToList();
+                HttpContext.Session.SetString("ExtractedCardUID", extractedCardUID);
+            }
 
+            try
+            {
+                var responseCards = await client.GetAsync("http://127.0.0.1:5000/api/rfid/list_rfcard_ids");
 
-        //            return new JsonResult(filteredCards.Select(b => new SelectListItem { Value = b.Id, Text = b.CardId }));
-        //        }
-        //    }
-        //    return new JsonResult(new List<SelectListItem>());
-        //}
+                if (responseCards.IsSuccessStatusCode)
+                {
+                    var json = await responseCards.Content.ReadAsStringAsync();
+                    using (var doc = JsonDocument.Parse(json))
+                    {
+                        var responseDatarfcard = doc.RootElement.GetProperty("response_data").EnumerateArray();
+
+                        var filteredCard = responseDatarfcard
+                            .FirstOrDefault(card => card.GetProperty("card_uid").GetString() == extractedCardUID);
+
+                        if (filteredCard.ValueKind != JsonValueKind.Undefined)
+                        {
+                            var cardId = filteredCard.GetProperty("card_id").GetString();
+                            var id = filteredCard.GetProperty("id").GetString(); // Fetch the actual id
+
+                            return new JsonResult(new { card_id = cardId, id = id });  // Return both card_id and id
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return new JsonResult(new { card_id = (string)null });
+        }
+
 
 
 
@@ -285,7 +275,6 @@ namespace POS.Pages
 
             client.DefaultRequestHeaders.Add("x-session-key", accessToken);
 
-            // Fetch the branches from the API
             var response = await client.GetAsync("http://127.0.0.1:5000/api/branch/list_branchs_ids");
 
             if (response.IsSuccessStatusCode)
@@ -295,8 +284,6 @@ namespace POS.Pages
                 using (JsonDocument doc = JsonDocument.Parse(json))
                 {
                     var responseDataBranch = doc.RootElement.GetProperty("response_data").EnumerateArray();
-
-                    // Filter branches based on the selected organizationId
                     var filteredBranches = responseDataBranch
                         .Where(branch => branch.GetProperty("organization").GetString() == organizationId)
                         .Select(branch => new
@@ -306,7 +293,6 @@ namespace POS.Pages
                         })
                         .ToList();
 
-                    // Return filtered branches
                     return new JsonResult(filteredBranches.Select(b => new SelectListItem { Value = b.Id, Text = b.Name }));
                 }
             }
@@ -314,6 +300,8 @@ namespace POS.Pages
             return new JsonResult(new List<SelectListItem>());
         }
 
+
+        
 
 
 
@@ -336,7 +324,7 @@ namespace POS.Pages
                 role = Employee.Role,
                 password = Employee.Password,
                 gender = Employee.Gender,
-                card_id = Employee.Card_id,
+                card_id = Employee.HiddenCardId,
                 city = Employee.City,
                 manager = Employee.Manager,
                 organization = Employee.Organization,
@@ -361,6 +349,8 @@ namespace POS.Pages
             }
         }
 
+
+        
 
     }
 

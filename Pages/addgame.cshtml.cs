@@ -176,10 +176,10 @@ namespace POS.Pages
 
             if (response.IsSuccessStatusCode)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                HttpContext.Session.SetString("FullResponse", responseContent);
-                return RedirectToPage("/response");
-                //return Page();
+                //var responseContent = await response.Content.ReadAsStringAsync();
+                //HttpContext.Session.SetString("FullResponse", responseContent);
+                //return RedirectToPage("/response");
+                return Page();
 
             }
             else

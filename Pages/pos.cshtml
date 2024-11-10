@@ -207,6 +207,7 @@
                         <h4>POS Management</h4>
                     </div>
                 </div>
+
                 <div class="card">
                     <div class="card-body">
                         <form method="post">
@@ -214,7 +215,8 @@
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label asp-for="POS.Card_id"></label>
-                                        <select asp-for="POS.Card_id" class="form-control" asp-items="Model.rfcardList"></select>
+                                        <input asp-for="POS.Card_id" class="form-control" id="cardUID" readonly />
+                                        <input type="hidden" asp-for="POS.HiddenCardID" id="hiddenCardID" /> <!-- Hidden field for card's respective id -->
                                         <span asp-validation-for="POS.Card_id" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -236,6 +238,13 @@
                                         <span asp-validation-for="POS.Purpose" class="text-danger"></span>
                                     </div>
                                 </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                @* <div class="form-group">
+                                    <label asp-for="POS.Member"></label>
+                                    <select asp-for="POS.Member" class="form-control" asp-items="Model.memberList"></select>
+                                    <span asp-validation-for="POS.Member" class="text-danger"></span>
+                                </div> *@
+                                </div>
                                 <div class="col-lg-12">
                                     <button type="submit" class="btn btn-submit me-2">Submit</button>
                                     <a asp-page="/productlist" class="btn btn-cancel">Cancel</a>
@@ -248,7 +257,33 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
+
+    <script>
+        $(document).ready(function () {
+            function getCardUIDFromServer() {
+                $.ajax({
+                    url: '/pos?handler=FetchCardUID',
+                    type: 'GET',
+                    success: function (data) {
+                        if (data.card_id) {
+                            $('#cardUID').val(data.card_id); 
+                            $('#hiddenCardID').val(data.id); 
+                        } else {
+                            console.log("No card ID returned.");
+                        }
+                    },
+                    error: function () {
+                        console.log("Error fetching data.");
+                    }
+                });
+            }
+
+            setInterval(getCardUIDFromServer, 100); 
+        });
+    </script>
 
     <script src="assets/js/jquery-3.6.0.min.js"></script>
     <script src="assets/js/feather.min.js"></script>
