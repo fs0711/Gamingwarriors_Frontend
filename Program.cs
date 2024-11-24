@@ -28,6 +28,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseMiddleware<RedirectMiddleware>();
+
 app.UseSession();
 
 app.UseHttpsRedirection();
