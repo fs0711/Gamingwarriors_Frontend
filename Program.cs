@@ -32,7 +32,7 @@ app.UseMiddleware<RedirectMiddleware>();
 
 app.UseSession();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.MapFallbackToPage("/signin");
 
